@@ -20,7 +20,7 @@ from .views import ServerViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register('servers', ServerViewSet, basename='server')
+router.register('servers', ServerViewSet, basename='servers')
 
 
 urlpatterns = router.urls
