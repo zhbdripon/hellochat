@@ -9,6 +9,7 @@ python-dotenv = "*"
 drf-spectacular = "*"
 djangorestframework = "*"
 django-debug-toolbar = "*"
+pillow = "*"
 
 [dev-packages]
 
