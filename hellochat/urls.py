@@ -35,7 +35,8 @@ urlpatterns = [
 ]
 
 websocket_urlpatterns = [
-    path('ws/chat', WebChatConsumer.as_asgi())
+    path('server/<str:server_id>/channel/<str:channel_id>',
+         WebChatConsumer.as_asgi())
 ]
 
 if settings.DEBUG:
