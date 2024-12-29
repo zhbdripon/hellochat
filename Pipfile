@@ -12,6 +12,7 @@ django-debug-toolbar = "*"
 pillow = "*"
 channels = "*"
 uvicorn = {extras = ["standard"], version = "*"}
+channels-redis = "*"
 
 [dev-packages]
 
