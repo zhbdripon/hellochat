@@ -23,6 +23,7 @@ from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView
 )
+from webchat.consumer import MyConsumer
 
 
 urlpatterns = [
@@ -34,7 +35,7 @@ urlpatterns = [
 ]
 
 websocket_urlpatterns = [
-
+    path('ws/chat', MyConsumer.as_asgi())
 ]
 
 if settings.DEBUG:

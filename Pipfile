@@ -10,6 +10,8 @@ drf-spectacular = "*"
 djangorestframework = "*"
 django-debug-toolbar = "*"
 pillow = "*"
+channels = "*"
+uvicorn = {extras = ["standard"], version = "*"}
 
 [dev-packages]
 
