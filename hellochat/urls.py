@@ -33,6 +33,10 @@ urlpatterns = [
     path('api/', include('server.urls')),
 ]
 
+websocket_urlpatterns = [
+
+]
+
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns += static(settings.MEDIA_URL,
