@@ -16,7 +16,7 @@ Including another URLconf
 """
 import debug_toolbar
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from drf_spectacular.views import (
@@ -24,14 +24,21 @@ from drf_spectacular.views import (
     SpectacularSwaggerView
 )
 from webchat.consumer import WebChatConsumer
+from rest_framework.routers import DefaultRouter
+from server.urls import router as server_router
+
+default_router = DefaultRouter()
+default_router.registry.extend(server_router.registry)
 
 
 urlpatterns = [
-    path('__debug__/', include(debug_toolbar.urls)),
+    path('', include(default_router.urls)),
     path('admin/', admin.site.urls),
+    re_path(r'^auth/', include('djoser.urls')),
+    re_path(r'^auth/', include('djoser.urls.jwt')),
     path('api/docs/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/swagger/ui/', SpectacularSwaggerView.as_view(url_name='schema')),
-    path('api/', include('server.urls')),
+    path('__debug__/', include(debug_toolbar.urls)),
 ]
 
 websocket_urlpatterns = [

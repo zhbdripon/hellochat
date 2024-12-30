@@ -13,6 +13,8 @@ pillow = "*"
 channels = "*"
 uvicorn = {extras = ["standard"], version = "*"}
 channels-redis = "*"
+djoser = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 
