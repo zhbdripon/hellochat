@@ -16,7 +16,12 @@ class WebChatConsumer(JsonWebsocketConsumer):
     def connect(self):
         self.channel_id = self.scope["url_route"]["kwargs"]["channel_id"]
         self.server_id = self.scope["url_route"]["kwargs"]["server_id"]
-        self.user = User.objects.get(pk=1)  # static user for now
+        self.user = self.scope["user"]
+
+        if not self.user or not self.user.is_authenticated:
+            self.close()
+            return
+
         self.accept()
         async_to_sync(self.channel_layer.group_add)(
             self.channel_id, self.channel_name)
