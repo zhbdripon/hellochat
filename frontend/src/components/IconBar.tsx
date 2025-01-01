@@ -4,11 +4,13 @@ import Stack from "@mui/material/Stack";
 import useServer from "../hook/useServer";
 import useServerStore from "../store";
 import { stringToColor } from "../utils";
+import { useTheme } from "@emotion/react";
 
 const IconBar = () => {
+  const theme = useTheme();
+  const isDarkMode = theme?.palette.mode === "dark";
   const setSelectedServer = useServerStore((s) => s.setSelectedServer);
   const selectedServer = useServerStore((s) => s.selectedServer);
-  console.log(selectedServer);
 
   const { data: serverData, isLoading, error } = useServer();
   const servers = serverData?.results;
@@ -31,7 +33,10 @@ const IconBar = () => {
   }
 
   return (
-    <Box className="w-[72px] h-screen flex flex-row justify-center py-5">
+    <Box
+      className={`w-[72px] h-screen flex flex-row justify-center py-5 
+        ${isDarkMode ? "bg-iconBarDark" : "bg-iconBarLight"}`}
+    >
       <Stack direction="column" spacing={2}>
         {servers?.map((server) => (
           <Tooltip title={server.name} placement="right" key={server.id}>
