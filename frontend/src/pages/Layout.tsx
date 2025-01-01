@@ -1,11 +1,11 @@
-import Server from './Server'
 import IconBar from '../components/IconBar'
+import { Outlet } from 'react-router'
 
 const Layout = () => {
   return (
     <div className='flex flex-row'>
         <IconBar />
-        <Server />
+        <Outlet />
     </div>
   )
 }
