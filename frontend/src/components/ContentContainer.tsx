@@ -5,9 +5,7 @@ interface Props {
 }
 
 const ContentContainer = ({ children }: Props) => {
-  return (
-    <div className="w-[calc(100%-304px)] bg-blue-500 h-screen">{children}</div>
-  );
+  return <div className="w-[calc(100%-304px)] h-screen">{children}</div>;
 };
 
 export default ContentContainer;
