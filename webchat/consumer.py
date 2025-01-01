@@ -4,6 +4,8 @@ from asgiref.sync import async_to_sync
 from .models import Conversation, Message
 from django.contrib.auth import get_user_model
 
+from .signals import user_belongs_to_server
+
 User = get_user_model()
 
 
@@ -19,6 +21,14 @@ class WebChatConsumer(JsonWebsocketConsumer):
         self.user = self.scope["user"]
 
         if not self.user or not self.user.is_authenticated:
+            self.close()
+            return
+
+        server_user_result = user_belongs_to_server.send(
+            sender=self.__class__, user=self.user, server_id=self.server_id)
+        user_is_member = server_user_result and server_user_result[0][1]
+
+        if not user_is_member:
             self.close()
             return
 
