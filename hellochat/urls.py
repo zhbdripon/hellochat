@@ -24,23 +24,20 @@ from drf_spectacular.views import (
     SpectacularSwaggerView
 )
 from webchat.consumer import WebChatConsumer
-from rest_framework.routers import DefaultRouter
-from server.urls import router as server_router
 from django.shortcuts import redirect
-
-default_router = DefaultRouter()
-default_router.registry.extend(server_router.registry)
 
 
 urlpatterns = [
-    path('', lambda request: redirect('api/', permanent=False)),
-    path('api/', include(default_router.urls)),
+    path('api/', include([
+        path('', include('server.urls')),
+        path('docs/schema/', SpectacularAPIView.as_view(), name='schema'),
+        path('docs/swagger/ui/', SpectacularSwaggerView.as_view(url_name='schema')),
+        re_path(r'^auth/', include('djoser.urls')),
+        re_path(r'^auth/', include('djoser.urls.jwt')),
+    ])),
     path('admin/', admin.site.urls),
-    path('api/docs/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/docs/swagger/ui/', SpectacularSwaggerView.as_view(url_name='schema')),
     path('__debug__/', include(debug_toolbar.urls)),
-    re_path(r'^auth/', include('djoser.urls')),
-    re_path(r'^auth/', include('djoser.urls.jwt')),
+    path('', lambda request: redirect('api/', permanent=False)),
 ]
 
 websocket_urlpatterns = [

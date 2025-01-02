@@ -14,9 +14,20 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from .views import ServerViewSet
-from rest_framework.routers import SimpleRouter
+from .views import ServerViewSet, ChannelViewSet
+from rest_framework_nested import routers
+from django.urls import path, include
+from .views import custom_api_root
 
-router = SimpleRouter()
-router.register('servers', ServerViewSet, basename='servers')
+server_router = routers.DefaultRouter()
+server_router.register('servers', ServerViewSet, basename='server')
+
+channel_router = routers.NestedDefaultRouter(
+    server_router, 'servers', lookup='server')
+channel_router.register('channels', ChannelViewSet, basename='server-channel')
+
+urlpatterns = [
+    path('', custom_api_root),
+    path(r'', include(server_router.urls)),
+    path(r'', include(channel_router.urls)),
+]
