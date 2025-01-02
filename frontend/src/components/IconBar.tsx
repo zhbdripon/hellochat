@@ -1,4 +1,5 @@
-import { Box, Tooltip } from "@mui/material";
+import { Box, Tooltip, useColorScheme } from "@mui/material";
+import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import useServer from "../hook/useServer";
@@ -8,6 +9,7 @@ import { useTheme } from "@emotion/react";
 
 const IconBar = () => {
   const theme = useTheme();
+  const { setMode } = useColorScheme();
   const isDarkMode = theme?.palette.mode === "dark";
   const setSelectedServer = useServerStore((s) => s.setSelectedServer);
   const selectedServer = useServerStore((s) => s.selectedServer);
@@ -37,23 +39,33 @@ const IconBar = () => {
       className={`w-[72px] h-screen flex flex-row justify-center py-5 
         ${isDarkMode ? "bg-iconBarDark" : "bg-iconBarLight"}`}
     >
-      <Stack direction="column" spacing={2}>
-        {servers?.map((server) => (
-          <Tooltip title={server.name} placement="right" key={server.id}>
-            <Avatar
-              className={
-                server.id === selectedServer?.id
-                  ? "border-4 border-red-600"
-                  : ""
-              }
-              variant="rounded"
-              {...stringAvatar(server.name)}
-              onClick={() => {
-                setSelectedServer(server);
-              }}
-            />
-          </Tooltip>
-        ))}
+      <Stack direction="column">
+        <Stack direction="column" spacing={2} className="h-[calc(100%-10px)]">
+          {servers?.map((server) => (
+            <Tooltip title={server.name} placement="right" key={server.id}>
+              <Avatar
+                className={
+                  server.id === selectedServer?.id
+                    ? "border-4 border-red-600"
+                    : ""
+                }
+                variant="rounded"
+                {...stringAvatar(server.name)}
+                onClick={() => {
+                  setSelectedServer(server);
+                }}
+              />
+            </Tooltip>
+          ))}
+        </Stack>
+        <Tooltip title="Toggle Dark Mode" placement="right">
+          <WbSunnyIcon
+            onClick={() => {
+              setMode(isDarkMode ? "light" : "dark");
+            }}
+            className="cursor-pointer"
+          />
+        </Tooltip>
       </Stack>
     </Box>
   );
