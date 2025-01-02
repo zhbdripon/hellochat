@@ -7,7 +7,7 @@ interface Server {
 }
 
 const useServer = () => {
-  const apiClient = new APIClient<ListApiResponse<Server>>("api/servers/");
+  const apiClient = new APIClient<ListApiResponse<Server>>("servers/");
 
   return useQuery({
     queryKey: ["servers"],

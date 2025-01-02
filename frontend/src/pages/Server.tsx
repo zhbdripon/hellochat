@@ -1,13 +1,17 @@
 import ContentContainer from "../components/ContentContainer";
 import Sidebar from "../components/Sidebar";
+import useServerStore from "../store";
+import ServerDetails from "../components/ServerDetails";
 
 import { useColorScheme } from "@mui/material/styles";
 
 const Server = () => {
   const { mode, setMode } = useColorScheme();
+  const server = useServerStore((state) => state.selectedServer);
+
   return (
     <>
-      <Sidebar>channel list</Sidebar>
+      <Sidebar>{server && <ServerDetails />}</Sidebar>
       <ContentContainer>
         <button
           onClick={() => {

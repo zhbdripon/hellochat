@@ -5,11 +5,13 @@ export default {
     extend: {
       colors: {
         iconBarDark: "#1E1F22",
-        iconBarLight: "white",
+        iconBarLight: "#e3e5e8",
         sidebarDark: "#2B2D31",
-        sidebarLight: "white",
+        sidebarLight: "#f2f3f5",
         mainDark: "#313338",
-        mainLight: "white",
+        mainLight: "#ffffff",
+        separatorDark: "#1f2937",
+        separatorLight: "#e5e7eb",
       },
     },
   },
