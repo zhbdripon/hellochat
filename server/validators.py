@@ -10,7 +10,7 @@ def validate_icon_size(image):
             if img.height != img.width:
                 raise ValidationError('Image must be square')
             if img.height > 70 or img.width > 70:
-                raise ValidationError('Image must be at most 1024x1024 pixels')
+                raise ValidationError('Image must be at most 70x70 pixels')
 
 
 def validate_image_file_extension(value):

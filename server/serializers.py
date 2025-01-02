@@ -25,4 +25,4 @@ class ServerSerializer(serializers.ModelSerializer):
 class ChannelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Channel
-        fields = ['id', 'name', 'topic']
+        fields = ['id', 'name', 'topic', 'icon', 'banner']

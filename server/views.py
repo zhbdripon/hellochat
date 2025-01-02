@@ -84,6 +84,9 @@ class ChannelViewSet(viewsets.ViewSet):
 
         return Channel.objects.filter(server__pk=server_pk, owner=self.request.user).all()
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     def get_object_or_404(self, server_pk, pk):
         try:
             return self.get_queryset(server_pk).get(pk=pk)
@@ -102,7 +105,8 @@ class ChannelViewSet(viewsets.ViewSet):
 
         paginator = PageNumberPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
-        serializer = ChannelSerializer(paginated_queryset, many=True)
+        serializer = ChannelSerializer(
+            paginated_queryset, many=True, context=self.get_serializer_context())
         return paginator.get_paginated_response(serializer.data)
 
     @extend_schema(
@@ -114,5 +118,6 @@ class ChannelViewSet(viewsets.ViewSet):
         except Http404:
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = ChannelSerializer(channel)
+        serializer = ChannelSerializer(
+            channel, context=self.get_serializer_context())
         return Response(serializer.data)
