@@ -1,28 +1,12 @@
 from django.http import Http404
-from rest_framework import viewsets, status
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+from rest_framework import status, viewsets
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.pagination import PageNumberPagination
-from drf_spectacular.utils import extend_schema, OpenApiParameter
 
-from .models import Server, Channel
-from .serializers import ServerSerializer, ChannelSerializer
-
-from rest_framework.reverse import reverse
-from rest_framework.decorators import api_view
-
-
-@api_view(['GET'])
-def custom_api_root(request, format=None):
-    return Response({
-        'servers': reverse('server-list', request=request, format=format),
-        'channels': reverse(
-            'server-channel-list',
-            args=['server_id'],
-            request=request,
-            format=format
-        ),
-    })
+from .models import Channel, Server
+from .serializers import ChannelSerializer, ServerSerializer
 
 
 class ServerViewSet(viewsets.ViewSet):
@@ -42,15 +26,15 @@ class ServerViewSet(viewsets.ViewSet):
 
     @extend_schema(
         parameters=[
-            OpenApiParameter(name='category', type=str,
-                             description='Category filter'),
-            OpenApiParameter(name='limit', type=int,
-                             description='Limit the number of results')
+            OpenApiParameter(name="category", type=str, description="Category filter"),
+            OpenApiParameter(
+                name="limit", type=int, description="Limit the number of results"
+            ),
         ],
-        responses={200: ServerSerializer(many=True)}
+        responses={200: ServerSerializer(many=True)},
     )
     def list(self, request):
-        category = request.query_params.get('category')
+        category = request.query_params.get("category")
         queryset = self.get_queryset()
 
         if category:
@@ -61,14 +45,12 @@ class ServerViewSet(viewsets.ViewSet):
         serializer = ServerSerializer(paginated_queryset, many=True)
         return paginator.get_paginated_response(serializer.data)
 
-    @extend_schema(
-        responses={200: ServerSerializer, 404: 'Not found'}
-    )
+    @extend_schema(responses={200: ServerSerializer, 404: "Not found"})
     def retrieve(self, request, pk=None):
         try:
             server = self.get_object_or_404(pk)
         except Http404:
-            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = ServerSerializer(server)
         return Response(serializer.data)
@@ -82,10 +64,12 @@ class ChannelViewSet(viewsets.ViewSet):
         if self.request.user.is_staff:
             return Channel.objects.filter(server__pk=server_pk).all()
 
-        return Channel.objects.filter(server__pk=server_pk, owner=self.request.user).all()
+        return Channel.objects.filter(
+            server__pk=server_pk, owner=self.request.user
+        ).all()
 
     def get_serializer_context(self):
-        return {'request': self.request}
+        return {"request": self.request}
 
     def get_object_or_404(self, server_pk, pk):
         try:
@@ -95,10 +79,11 @@ class ChannelViewSet(viewsets.ViewSet):
 
     @extend_schema(
         parameters=[
-            OpenApiParameter(name='limit', type=int,
-                             description='Limit the number of results')
+            OpenApiParameter(
+                name="limit", type=int, description="Limit the number of results"
+            )
         ],
-        responses={200: ChannelSerializer(many=True)}
+        responses={200: ChannelSerializer(many=True)},
     )
     def list(self, request, server_pk):
         queryset = self.get_queryset(server_pk)
@@ -106,18 +91,16 @@ class ChannelViewSet(viewsets.ViewSet):
         paginator = PageNumberPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
         serializer = ChannelSerializer(
-            paginated_queryset, many=True, context=self.get_serializer_context())
+            paginated_queryset, many=True, context=self.get_serializer_context()
+        )
         return paginator.get_paginated_response(serializer.data)
 
-    @extend_schema(
-        responses={200: ChannelSerializer, 404: 'Not found'}
-    )
+    @extend_schema(responses={200: ChannelSerializer, 404: "Not found"})
     def retrieve(self, request, server_pk, pk=None):
         try:
             channel = self.get_object_or_404(server_pk, pk)
         except Http404:
-            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = ChannelSerializer(
-            channel, context=self.get_serializer_context())
+        serializer = ChannelSerializer(channel, context=self.get_serializer_context())
         return Response(serializer.data)

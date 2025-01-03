@@ -14,38 +14,45 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 import debug_toolbar
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
-from drf_spectacular.views import (
-    SpectacularAPIView,
-    SpectacularSwaggerView
-)
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from webchat.consumer import WebChatConsumer
 from django.shortcuts import redirect
-
+from .views import custom_api_root
 
 urlpatterns = [
-    path('api/', include([
-        path('', include('server.urls')),
-        path('docs/schema/', SpectacularAPIView.as_view(), name='schema'),
-        path('docs/swagger/ui/', SpectacularSwaggerView.as_view(url_name='schema')),
-        re_path(r'^auth/', include('djoser.urls')),
-        re_path(r'^auth/', include('djoser.urls.jwt')),
-    ])),
-    path('admin/', admin.site.urls),
-    path('__debug__/', include(debug_toolbar.urls)),
-    path('', lambda request: redirect('api/', permanent=False)),
+    path(
+        "api/",
+        include(
+            [
+                path("", custom_api_root),
+                path("", include("server.urls")),
+                path("", include("webchat.urls")),
+                path("docs/schema/", SpectacularAPIView.as_view(), name="schema"),
+                path(
+                    "docs/swagger/ui/",
+                    SpectacularSwaggerView.as_view(url_name="schema"),
+                ),
+                re_path(r"^auth/", include("djoser.urls")),
+                re_path(r"^auth/", include("djoser.urls.jwt")),
+            ]
+        ),
+    ),
+    path("admin/", admin.site.urls),
+    path("__debug__/", include(debug_toolbar.urls)),
+    path("", lambda request: redirect("api/", permanent=False)),
 ]
 
 websocket_urlpatterns = [
-    path('server/<str:server_id>/channel/<str:channel_id>',
-         WebChatConsumer.as_asgi())
+    path("server/<str:server_id>/channel/<str:channel_id>", WebChatConsumer.as_asgi())
 ]
 
 if settings.DEBUG:
     import debug_toolbar
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
+
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
