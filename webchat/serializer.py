@@ -3,6 +3,8 @@ from .models import Message
 
 
 class MessageSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField()
+
     class Meta:
         model = Message
-        fields = ['id', 'content', 'author', 'conversation', 'created_at']
+        fields = ["id", "content", "author", "conversation", "created_at"]

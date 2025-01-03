@@ -31,6 +31,10 @@ class MessageViewSet(viewsets.ModelViewSet):
         user_belongs_to_channel = signal_results[0][1]
 
         if user_belongs_to_channel:
-            return Message.objects.filter(conversation__channel=channel_id).all()
+            return (
+                Message.objects.filter(conversation__channel=channel_id)
+                .order_by("-created_at")
+                .all()
+            )
 
         return Message.objects.none()
