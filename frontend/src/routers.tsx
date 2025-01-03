@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router";
 import Layout from "./pages/Layout";
 import Server from "./pages/Server";
 import ErrorPage from "./pages/ErrorPage";
+import Auth from "./pages/Auth";
 
 const browserRouter = createBrowserRouter([
   {
@@ -11,6 +12,11 @@ const browserRouter = createBrowserRouter([
     children: [
       { index: true, element: <Server />},
     ]
+  },
+  {
+    path: '/auth',
+    element: <Auth />,
+    errorElement: <ErrorPage />,
   }
 ])
 
