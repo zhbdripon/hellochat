@@ -1,144 +1,84 @@
-import { Box } from '@mui/material'
-import TextField from '@mui/material/TextField';
-import { useEffect, useRef } from 'react';
+import { Box } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import { useEffect, useRef } from "react";
+import { useQueryClient } from "react-query";
 
-const ChatRoom = () => {
-  const messageContainerRef = useRef<HTMLElement>()
+import useMessage, { Message } from "../hook/useMessage";
+import useWebSocket from "../hook/useWebSocket";
 
-  const messages = [
-    {
-      id: 1,
-      created_at: new Date(),
-      message: "Hello, how are you?",
-      sender_name: "Alice"
+interface Props {
+  channelId: number;
+  serverId: number;
+}
+
+const ChatRoom = ({ serverId, channelId }: Props) => {
+  const messageContainerRef = useRef<HTMLElement>();
+  const inputRef = useRef<HTMLInputElement>();
+  const queryClient = useQueryClient();
+  const { data, isLoading, error } = useMessage({ channelId: channelId });
+  const messages = data?.results;
+
+  const ws = useWebSocket({
+    channelId: channelId,
+    serverId: serverId,
+    token: localStorage.getItem("access") || "",
+    onNewMessageReceived: (message: Message) => {
+      queryClient.setQueryData(["messages", channelId], (oldData: any) => {
+        const messageExist = (oldData.results || []).some(
+          (m) => m.id === message.id
+        );
+
+        if (messageExist) {
+          return oldData;
+        }
+
+        return {
+          ...oldData,
+          results: [message, ...oldData.results],
+        };
+      });
     },
-    {
-      id: 2,
-      created_at: new Date(),
-      message: "I'm good, thanks! How about you?",
-      sender_name: "Bob"
-    },
-    {
-      id: 3,
-      created_at: new Date(),
-      message: "I'm doing well, thank you!",
-      sender_name: "Alice"
-    },
-    {
-      id: 4,
-      created_at: new Date(),
-      message: "Hello, how are you?",
-      sender_name: "Alice"
-    },
-    {
-      id: 5,
-      created_at: new Date(),
-      message: "I'm good, thanks! How about you?",
-      sender_name: "Bob"
-    },
-    {
-      id: 6,
-      created_at: new Date(),
-      message: "I'm doing well, thank you!",
-      sender_name: "Alice"
-    },
-    {
-      id: 7,
-      created_at: new Date(),
-      message: "Hello, how are you?",
-      sender_name: "Alice"
-    },
-    {
-      id: 8,
-      created_at: new Date(),
-      message: "I'm good, thanks! How about you?",
-      sender_name: "Bob"
-    },
-    {
-      id: 9,
-      created_at: new Date(),
-      message: "I'm doing well, thank you!",
-      sender_name: "Alice"
-    },
-    {
-      id: 10,
-      created_at: new Date(),
-      message: "Hello, how are you?",
-      sender_name: "Alice"
-    },
-    {
-      id: 11,
-      created_at: new Date(),
-      message: "I'm good, thanks! How about you?",
-      sender_name: "Bob"
-    },
-    {
-      id: 12,
-      created_at: new Date(),
-      message: "I'm doing well, thank you!",
-      sender_name: "Alice"
-    },
-    {
-      id: 13,
-      created_at: new Date(),
-      message: "Hello, how are you?",
-      sender_name: "Alice"
-    },
-    {
-      id: 14,
-      created_at: new Date(),
-      message: "I'm good, thanks! How about you?",
-      sender_name: "Bob"
-    },
-    {
-      id: 15,
-      created_at: new Date(),
-      message: "I'm doing well, thank you!",
-      sender_name: "Alice"
-    },
-    {
-      id: 16,
-      created_at: new Date(),
-      message: "Hello, how are you?",
-      sender_name: "Alice"
-    },
-    {
-      id: 17,
-      created_at: new Date(),
-      message: "I'm good, thanks! How about you?",
-      sender_name: "Bob"
-    },
-    {
-      id: 18,
-      created_at: new Date(),
-      message: "I'm doing well, thank you!",
-      sender_name: "Alice"
-    },
-  ]
+  });
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      if (inputRef.current && inputRef.current.value.trim() !== "") {
+        ws.send(inputRef.current.value);
+        inputRef.current.value = "";
+      }
+    }
+  };
 
   useEffect(() => {
     if (messageContainerRef && messageContainerRef.current) {
-      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight
+      messageContainerRef.current.scrollTop =
+        messageContainerRef.current.scrollHeight;
     }
-  }, [])
+  }, [messages]);
+
+  if (!serverId || !channelId || !messages) return null;
 
   return (
     <Box className="flex flex-col justify-end h-full p-4">
-      <Box className='overflow-y-auto h-[90%]' ref={messageContainerRef}>
-        {messages.map((message) => (
-          <Box key={message.id} className='bg-gray-200 p-2 rounded-lg mb-2'>
-            <p className='text-sm font-semibold'>{message.sender_name} {message.id}</p>
-            <p>{message.message}</p>
+      <Box className="overflow-y-auto h-[90%]" ref={messageContainerRef}>
+        {[...messages].reverse().map((message) => (
+          <Box key={message.id} className="bg-gray-200 p-2 rounded-lg mb-2">
+            <p className="text-sm font-semibold">
+              {message.author} {message.id}
+            </p>
+            <p>{message.content}</p>
           </Box>
         ))}
       </Box>
-        <TextField
-            className='w-[98%]'
-            id="outlined-required"
-            defaultValue="Hello World"
-        />
+      <TextField
+        inputRef={inputRef}
+        className="w-[98%]"
+        id="outlined-required"
+        placeholder="Type your message..."
+        onKeyDown={handleKeyDown}
+      />
     </Box>
-  )
-}
+  );
+};
 
-export default ChatRoom
+export default ChatRoom;
