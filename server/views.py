@@ -14,9 +14,7 @@ class ServerViewSet(viewsets.ViewSet):
     serializer_class = ServerSerializer
 
     def get_queryset(self):
-        if self.request.user.is_staff:
-            return Server.objects.all()
-        return Server.objects.filter(owner=self.request.user)
+        return Server.objects.filter(members=self.request.user).all()
 
     def get_object_or_404(self, pk):
         try:
@@ -61,12 +59,11 @@ class ChannelViewSet(viewsets.ViewSet):
     serializer_class = ChannelSerializer
 
     def get_queryset(self, server_pk):
-        if self.request.user.is_staff:
-            return Channel.objects.filter(server__pk=server_pk).all()
-
-        return Channel.objects.filter(
-            server__pk=server_pk, owner=self.request.user
-        ).all()
+        return (
+            Channel.objects.filter(server__pk=server_pk)
+            .filter(server__members=self.request.user)
+            .all()
+        )
 
     def get_serializer_context(self):
         return {"request": self.request}
