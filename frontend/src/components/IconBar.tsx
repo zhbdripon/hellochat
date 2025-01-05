@@ -1,21 +1,42 @@
-import { Box, Tooltip, useColorScheme } from "@mui/material";
+import { useTheme } from "@emotion/react";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
+import { Box, Tooltip, useColorScheme } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
+import { useEffect } from "react";
 import useServer from "../hook/useServer";
-import useServerStore from "../store";
+import useWebSocket, { WS_EVENTS } from "../hook/useWebSocket";
+import useServerStore, { Server } from "../store";
 import { stringToColor } from "../utils";
-import { useTheme } from "@emotion/react";
 
 const IconBar = () => {
   const theme = useTheme();
   const { setMode } = useColorScheme();
+  const socket = useWebSocket();
   const isDarkMode = theme?.palette.mode === "dark";
   const setSelectedServer = useServerStore((s) => s.setSelectedServer);
   const selectedServer = useServerStore((s) => s.selectedServer);
 
   const { data: serverData, isLoading, error } = useServer();
   const servers = serverData?.results;
+
+  const connectServersWithWebSocket = (servers: Server[], socket) => {
+    servers.forEach((server) => {
+      console.log("adding server : ", server);
+      socket?.send(
+        JSON.stringify({
+          type: WS_EVENTS.SERVER_JOIN,
+          server_id: server.id,
+        })
+      );
+    });
+  };
+
+  useEffect(() => {
+    if (servers && socket) {
+      connectServersWithWebSocket(servers, socket);
+    }
+  }, [servers, socket]);
 
   if (isLoading) {
     return <div>Loading...</div>;

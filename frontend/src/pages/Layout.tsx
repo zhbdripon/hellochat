@@ -1,12 +1,15 @@
 import IconBar from '../components/IconBar'
 import { Outlet } from 'react-router'
+import { WebSocketProvider } from '../context/webSocketContext'
 
 const Layout = () => {
   return (
-    <div className='flex flex-row'>
-        <IconBar />
-        <Outlet />
-    </div>
+    <WebSocketProvider>
+      <div className='flex flex-row'>
+          <IconBar />
+          <Outlet />
+      </div>
+    </WebSocketProvider>
   )
 }
 

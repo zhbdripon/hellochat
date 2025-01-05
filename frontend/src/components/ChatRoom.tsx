@@ -5,6 +5,7 @@ import { useQueryClient } from "react-query";
 
 import useMessage, { Message } from "../hook/useMessage";
 import useWebSocket from "../hook/useWebSocket";
+import { ListApiResponse } from "../services/apiClient";
 
 interface Props {
   channelId: number;
@@ -17,13 +18,15 @@ const ChatRoom = ({ serverId, channelId }: Props) => {
   const queryClient = useQueryClient();
   const { data, isLoading, error } = useMessage({ channelId: channelId });
   const messages = data?.results;
+  const socket = useWebSocket({
+    channelId,
+    onReceiveNewMessage,
+  });
 
-  const ws = useWebSocket({
-    channelId: channelId,
-    serverId: serverId,
-    token: localStorage.getItem("access") || "",
-    onNewMessageReceived: (message: Message) => {
-      queryClient.setQueryData(["messages", channelId], (oldData: any) => {
+  function onReceiveNewMessage(message: Message) {
+    queryClient.setQueryData(
+      ["messages", channelId],
+      (oldData: ListApiResponse<Message>) => {
         const messageExist = (oldData.results || []).some(
           (m) => m.id === message.id
         );
@@ -36,14 +39,22 @@ const ChatRoom = ({ serverId, channelId }: Props) => {
           ...oldData,
           results: [message, ...oldData.results],
         };
-      });
-    },
-  });
+      }
+    );
+  }
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      if (inputRef.current && inputRef.current.value.trim() !== "") {
-        ws.send(inputRef.current.value);
+      if (inputRef.current && inputRef.current.value.trim() !== "" && socket) {
+        socket.send(
+          JSON.stringify({
+            type: "server_message",
+            server_id: serverId,
+            channel_id: channelId,
+            message: inputRef.current.value.trim(),
+          })
+        );
+
         inputRef.current.value = "";
       }
     }

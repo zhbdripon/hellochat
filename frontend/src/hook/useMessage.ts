@@ -6,6 +6,7 @@ export interface Message {
   content: string;
   author: string;
   created_at: string;
+  channel_id: string
 }
 
 interface UseMessageParams {

@@ -1,11 +1,18 @@
-from channels.generic.websocket import JsonWebsocketConsumer
+import json
+
 from asgiref.sync import async_to_sync
+from channels.generic.websocket import JsonWebsocketConsumer
 from django.contrib.auth import get_user_model
 
 from .models import Conversation, Message
 from .signals import user_belongs_to_server
 
 User = get_user_model()
+
+
+class WSEvents:
+    server_message = "server_message"
+    server_join = "server_join"
 
 
 class WebChatConsumer(JsonWebsocketConsumer):
@@ -68,29 +75,27 @@ class WebChatConsumer(JsonWebsocketConsumer):
         async_to_sync(self.channel_layer.group_send)(
             server_name,
             {
-                "type": "group_message",
+                "type": WSEvents.server_message,
                 "message": {
                     "content": message.content,
                     "id": message.id,
                     "author": self.user.username,
                     "timestamp": message.created_at.isoformat(),
-                    "conversation": conversation.id,
+                    "channel_id": conversation.channel,
                 },
             },
         )
 
     def receive(self, text_data):
-        import json
-
         data = json.loads(text_data)
         type = data.get("type")
 
-        if type == "server_join":
+        if type == WSEvents.server_join:
             self.add_to_server_group(data)
-        elif type == "server_message":
+        elif type == WSEvents.server_message:
             self.send_group_message(data)
 
-    def group_message(self, event):
+    def server_message(self, event):
         self.send_json(event)
 
     def disconnect(self, close_code):
