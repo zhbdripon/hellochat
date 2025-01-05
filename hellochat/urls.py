@@ -48,9 +48,7 @@ urlpatterns = [
     path("", lambda request: redirect("api/", permanent=False)),
 ]
 
-websocket_urlpatterns = [
-    path("server/<str:server_id>/channel/<str:channel_id>", WebChatConsumer.as_asgi())
-]
+websocket_urlpatterns = [path("join", WebChatConsumer.as_asgi())]
 
 if settings.DEBUG:
     import debug_toolbar
