@@ -1,6 +1,7 @@
 import { useState } from "react";
-import useLogin from "../hook/useLogin";
+import { useNavigate } from "react-router";
 
+import useLogin from "../hook/useLogin";
 import APIClient from "../services/apiClient";
 
 export interface User {
@@ -10,6 +11,7 @@ export interface User {
 }
 
 const Auth = () => {
+  const navigate = useNavigate()
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const mutation = useLogin(onLoginSuccess);
@@ -18,6 +20,7 @@ const Auth = () => {
     const apiClient = new APIClient<User>("auth/users/me/");
     const userData = await apiClient.get();
     localStorage.setItem("username", userData.username);
+    navigate('/');
   }
 
   return (

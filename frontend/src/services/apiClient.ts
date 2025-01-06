@@ -1,4 +1,5 @@
-import axios, { AxiosRequestConfig } from "axios";
+import { AxiosRequestConfig } from "axios";
+import axiosInstance from "./axios";
 
 export interface ListApiResponse<T> {
   count: number;
@@ -6,18 +7,6 @@ export interface ListApiResponse<T> {
   next?: string | null;
   previous?: string | null;
 }
-
-const axiosInstance = axios.create({
-  baseURL: "http://172.28.28.49:8000/api/",
-});
-
-axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("access");
-  if (token) {
-    config.headers.Authorization = `JWT ${token}`;
-  }
-  return config;
-});
 
 class APIClient<T> {
   endpoint: string;
@@ -27,9 +16,7 @@ class APIClient<T> {
   }
 
   getAll = (config: AxiosRequestConfig) => {
-    return axiosInstance
-      .get<T>(this.endpoint, config)
-      .then((res) => res.data);
+    return axiosInstance.get<T>(this.endpoint, config).then((res) => res.data);
   };
 
   get = () => {
