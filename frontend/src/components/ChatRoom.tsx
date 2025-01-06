@@ -6,6 +6,7 @@ import { useQueryClient } from "react-query";
 import useMessage, { Message } from "../hook/useMessage";
 import useWebSocket from "../hook/useWebSocket";
 import { ListApiResponse } from "../services/apiClient";
+import { useTheme } from "@emotion/react";
 
 interface Props {
   channelId: number;
@@ -16,6 +17,8 @@ const ChatRoom = ({ serverId, channelId }: Props) => {
   const messageContainerRef = useRef<HTMLElement>();
   const inputRef = useRef<HTMLInputElement>();
   const queryClient = useQueryClient();
+  const theme = useTheme();
+  const isDarkMode = theme?.palette.mode === "dark";
   const { data, isLoading, error } = useMessage({ channelId: channelId });
   const messages = data?.results;
   const socket = useWebSocket({
@@ -71,9 +74,17 @@ const ChatRoom = ({ serverId, channelId }: Props) => {
 
   return (
     <Box className="flex flex-col justify-end h-full p-4">
-      <Box className="overflow-y-auto h-[90%]" ref={messageContainerRef}>
-        {[...messages].reverse().map((message) => (
-          <Box key={message.id} className="bg-gray-200 p-2 rounded-lg mb-2">
+      <Box
+        className="overflow-y-auto h-[90%] flex flex-col-reverse"
+        ref={messageContainerRef}
+      >
+        {messages.map((message) => (
+          <Box
+            key={message.id}
+            className={`${
+              isDarkMode ? "bg-chatBubbleBgDark" : "bg-gray-200"
+            } p-2 rounded-lg mb-2`}
+          >
             <p className="text-sm font-semibold">
               {message.author} {message.id}
             </p>

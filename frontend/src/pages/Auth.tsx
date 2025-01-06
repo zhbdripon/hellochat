@@ -1,10 +1,24 @@
 import { useState } from "react";
 import useLogin from "../hook/useLogin";
 
+import APIClient from "../services/apiClient";
+
+export interface User {
+  email: string;
+  id: number;
+  username: string;
+}
+
 const Auth = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const mutation = useLogin();
+  const mutation = useLogin(onLoginSuccess);
+
+  async function onLoginSuccess() {
+    const apiClient = new APIClient<User>("auth/users/me/");
+    const userData = await apiClient.get();
+    localStorage.setItem("username", userData.username);
+  }
 
   return (
     <div>

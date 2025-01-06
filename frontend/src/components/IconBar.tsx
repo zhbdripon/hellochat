@@ -91,6 +91,7 @@ const IconBar = () => {
               setMode(isDarkMode ? "light" : "dark");
             }}
             className="cursor-pointer"
+            sx={{ width: "100%" }}
           />
         </Tooltip>
       </Stack>

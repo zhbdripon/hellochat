@@ -1,5 +1,6 @@
 import React from "react";
 import { useTheme } from "@emotion/react";
+import { Box } from "@mui/material";
 
 interface Props {
   children: React.ReactNode;
@@ -10,13 +11,13 @@ const Sidebar = ({ children }: Props) => {
   const isDarkMode = theme?.palette.mode === "dark";
 
   return (
-    <div
+    <Box
       className={`
         w-60 h-screen 
         ${isDarkMode ? "bg-sidebarDark" : "bg-sidebarLight"}`}
     >
       {children}
-    </div>
+    </Box>
   );
 };
 

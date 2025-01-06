@@ -10,10 +10,17 @@ const ServerDetails = () => {
 
   if (!server) return null;
 
+  const userName = localStorage.getItem('username') || '';
+
   return (
-    <Box>
-      <ServerHeader serverName={server.name} />
-      <ChannelList serverId={server.id} />
+    <Box className="h-full">
+      <div className="p-2 h-calc-minus-48">
+        <ServerHeader serverName={server.name} />
+        <ChannelList serverId={server.id} />
+      </div>
+      <Box className="h-12 bg-iconBarDark">
+        {userName}
+      </Box>
     </Box>
   );
 };

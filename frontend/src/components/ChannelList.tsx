@@ -42,7 +42,10 @@ const ChannelList = ({ serverId }: Props) => {
             disablePadding
             onClick={() => setSelectedChannel(channel)}
           >
-            <ListItemButton selected={selectedChannel?.id === channel.id}>
+            <ListItemButton
+              selected={selectedChannel?.id === channel.id}
+              sx={{ borderRadius: "10px" }}
+            >
               <ListItemIcon
                 sx={{ minWidth: 40, display: "flex", alignItems: "center" }}
               >

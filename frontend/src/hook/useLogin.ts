@@ -17,7 +17,9 @@ interface LoginRequest {
   password: string;
 }
 
-const useLogin = () => {
+type useLoginParams = () => Promise<void>
+
+const useLogin = (onSuccess: useLoginParams) => {
   const apiClient = new APIClient<LoginResponse>("auth/jwt/create/");
 
   return useMutation<LoginResponse, Error, LoginRequest>({
@@ -27,6 +29,7 @@ const useLogin = () => {
       console.log(data);
       localStorage.setItem("access", data?.access);
       localStorage.setItem("refresh", data?.refresh);
+      onSuccess()
     },
   });
 };

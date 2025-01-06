@@ -12,6 +12,11 @@ export default {
         mainLight: "#ffffff",
         separatorDark: "#1f2937",
         separatorLight: "#e5e7eb",
+        chatBubbleBgDark: "#2B2D31",
+        chatBubbleBgLight: "#c8e7eb"
+      },
+      height: {
+        'calc-minus-48': 'calc(100% - 48px)',
       },
     },
   },
