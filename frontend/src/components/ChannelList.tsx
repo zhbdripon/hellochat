@@ -1,3 +1,4 @@
+import TagIcon from "@mui/icons-material/Tag";
 import {
   List,
   ListItem,
@@ -5,8 +6,8 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+import { useEffect } from "react";
 import useChannel from "../hook/useChannel";
-import TagIcon from "@mui/icons-material/Tag";
 import useServerStore from "../store";
 
 interface Props {
@@ -15,8 +16,16 @@ interface Props {
 
 const ChannelList = ({ serverId }: Props) => {
   const setSelectedChannel = useServerStore((s) => s.setSelectedChannel);
+  const selectedServer = useServerStore((s) => s.selectedServer);
+  const selectedChannel = useServerStore((s) => s.selectedChannel);
   const { data, isLoading, error } = useChannel({ serverId });
   const channels = data?.results;
+
+  useEffect(() => {
+    if (selectedServer && channels) {
+      setSelectedChannel(channels[0]);
+    }
+  }, [selectedServer, channels]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -33,7 +42,7 @@ const ChannelList = ({ serverId }: Props) => {
             disablePadding
             onClick={() => setSelectedChannel(channel)}
           >
-            <ListItemButton>
+            <ListItemButton selected={selectedChannel?.id === channel.id}>
               <ListItemIcon
                 sx={{ minWidth: 40, display: "flex", alignItems: "center" }}
               >

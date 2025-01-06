@@ -38,6 +38,12 @@ const IconBar = () => {
     }
   }, [servers, socket]);
 
+  useEffect(() => {
+    if (!selectedServer && servers) {
+      setSelectedServer(servers[0]);
+    }
+  }, [selectedServer, servers]);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
