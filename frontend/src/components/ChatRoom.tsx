@@ -6,7 +6,7 @@ import { useQueryClient } from "react-query";
 import useMessage, { Message } from "../hook/useMessage";
 import useWebSocket from "../hook/useWebSocket";
 import { ListApiResponse } from "../services/apiClient";
-import { useTheme } from "@emotion/react";
+import useDarkMode from "../hook/useDarkMode";
 
 interface Props {
   channelId: number;
@@ -17,8 +17,7 @@ const ChatRoom = ({ serverId, channelId }: Props) => {
   const messageContainerRef = useRef<HTMLElement>();
   const inputRef = useRef<HTMLInputElement>();
   const queryClient = useQueryClient();
-  const theme = useTheme();
-  const isDarkMode = theme?.palette.mode === "dark";
+  const isDarkMode = useDarkMode();
   const { data, isLoading, error } = useMessage({ channelId: channelId });
   const messages = data?.results;
   const socket = useWebSocket({

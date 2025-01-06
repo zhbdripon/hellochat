@@ -1,9 +1,9 @@
 import Typography from "@mui/joy/Typography";
 import { Box } from "@mui/material";
-import { useTheme } from "@mui/material";
 
 import useServerStore from "../store";
 import ChannelList from "./ChannelList";
+import useDarkMode from "../hook/useDarkMode";
 
 const ServerDetails = () => {
   const server = useServerStore((s) => s.selectedServer);
@@ -32,8 +32,7 @@ interface ServerHeaderProps {
 }
 
 const ServerHeader = ({ serverName }: ServerHeaderProps) => {
-  const theme = useTheme();
-  const isDarkMode = theme?.palette.mode === "dark";
+  const isDarkMode = useDarkMode()
   return (
     <Box
       className={`

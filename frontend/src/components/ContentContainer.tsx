@@ -1,13 +1,12 @@
 import React from "react";
-import { useTheme } from "@emotion/react";
+import useDarkMode from "../hook/useDarkMode";
 
 interface Props {
   children: React.ReactNode;
 }
 
 const ContentContainer = ({ children }: Props) => {
-  const theme = useTheme();
-  const isDarkMode = theme?.palette.mode === "dark";
+  const isDarkMode = useDarkMode();
 
   return (
     <div

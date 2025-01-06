@@ -1,14 +1,13 @@
 import React from "react";
-import { useTheme } from "@emotion/react";
 import { Box } from "@mui/material";
+import useDarkMode from "../hook/useDarkMode";
 
 interface Props {
   children: React.ReactNode;
 }
 
 const Sidebar = ({ children }: Props) => {
-  const theme = useTheme();
-  const isDarkMode = theme?.palette.mode === "dark";
+  const isDarkMode = useDarkMode();
 
   return (
     <Box

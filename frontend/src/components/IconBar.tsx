@@ -1,4 +1,3 @@
-import { useTheme } from "@emotion/react";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import { Box, Tooltip, useColorScheme } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
@@ -8,12 +7,12 @@ import useServer from "../hook/useServer";
 import useWebSocket, { WS_EVENTS } from "../hook/useWebSocket";
 import useServerStore, { Server } from "../store";
 import { stringToColor } from "../utils";
+import useDarkMode from "../hook/useDarkMode";
 
 const IconBar = () => {
-  const theme = useTheme();
   const { setMode } = useColorScheme();
   const socket = useWebSocket();
-  const isDarkMode = theme?.palette.mode === "dark";
+  const isDarkMode = useDarkMode()
   const setSelectedServer = useServerStore((s) => s.setSelectedServer);
   const selectedServer = useServerStore((s) => s.selectedServer);
 
