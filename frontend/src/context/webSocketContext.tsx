@@ -11,7 +11,7 @@ interface WebSocketContextInterface {
   isConnected: boolean;
 }
 
-export const WebSocketContext = createContext<WebSocketContextInterface>(null);
+export const WebSocketContext = createContext<WebSocketContextInterface | null>(null);
 
 interface WebSocketProviderProps {
   children: ReactNode;

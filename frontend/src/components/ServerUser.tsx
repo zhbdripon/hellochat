@@ -1,8 +1,10 @@
 import { Avatar, Badge, Box, Stack, styled, Typography } from "@mui/material";
 import useWebSocket from "../hook/useWebSocket";
+import useDarkMode from "../hook/useDarkMode";
 
 const ServerUser = () => {
   const { isConnected } = useWebSocket(undefined);
+  const isDarkMode = useDarkMode();
   const userName = localStorage.getItem("username") || "";
   const badgeDotColor = isConnected ? "#44b700" : "#D60000";
 
@@ -36,7 +38,11 @@ const ServerUser = () => {
   }));
 
   return (
-    <Box className="h-12 bg-iconBarDark flex flex-col justify-center">
+    <Box
+      className={`h-12 flex flex-col justify-center ${
+        isDarkMode ? "bg-iconBarDark" : "bg-iconBarLight"
+      }`}
+    >
       <Stack direction="row" className="flex flex-col items-center">
         <StyledBadge
           overlap="circular"
