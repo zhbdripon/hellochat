@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import useDarkMode from "../hook/useDarkMode";
 import useServerStore from "../store";
 import ChannelList from "./ChannelList";
-import ServerUser from "./ServerUser";
+import ServerUserTile from "./ServerUserTile";
 
 const ServerDetails = () => {
   const server = useServerStore((s) => s.selectedServer);
@@ -17,7 +17,7 @@ const ServerDetails = () => {
         <ServerHeader serverName={server.name} />
         <ChannelList serverId={server.id} />
       </div>
-      <ServerUser />
+      <ServerUserTile />
     </Box>
   );
 };
