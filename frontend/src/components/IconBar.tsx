@@ -3,39 +3,37 @@ import { Box, Tooltip, useColorScheme } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import { useEffect } from "react";
+import useDarkMode from "../hook/useDarkMode";
 import useServer from "../hook/useServer";
 import useWebSocket, { WS_EVENTS } from "../hook/useWebSocket";
 import useServerStore, { Server } from "../store";
 import { stringToColor } from "../utils";
-import useDarkMode from "../hook/useDarkMode";
 
 const IconBar = () => {
   const { setMode } = useColorScheme();
-  const socket = useWebSocket();
-  const isDarkMode = useDarkMode()
+  const { sendMessage } = useWebSocket(undefined);
+  const isDarkMode = useDarkMode();
   const setSelectedServer = useServerStore((s) => s.setSelectedServer);
   const selectedServer = useServerStore((s) => s.selectedServer);
 
   const { data: serverData, isLoading, error } = useServer();
   const servers = serverData?.results;
 
-  const connectServersWithWebSocket = (servers: Server[], socket) => {
+  const connectServersWithWebSocket = (servers: Server[]) => {
     servers.forEach((server) => {
-      console.log("adding server : ", server);
-      socket?.send(
-        JSON.stringify({
-          type: WS_EVENTS.SERVER_JOIN,
-          server_id: server.id,
-        })
-      );
+      console.log("adding chatroom to websocket : ", server);
+      sendMessage({
+        type: WS_EVENTS.SERVER_JOIN,
+        server_id: server.id,
+      });
     });
   };
 
   useEffect(() => {
-    if (servers && socket) {
-      connectServersWithWebSocket(servers, socket);
+    if (servers) {
+      connectServersWithWebSocket(servers);
     }
-  }, [servers, socket]);
+  }, [servers]);
 
   useEffect(() => {
     if (!selectedServer && servers) {

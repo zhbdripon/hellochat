@@ -21,11 +21,15 @@ interface ServerMessageParam {
 
 type UseWSParams = ServerMessageParam | undefined;
 
-type WebSocketContextType = WebSocket | null;
+interface UseWebSocketInterface {
+  socket: WebSocket | null;
+  sendMessage: (message: object) => void;
+  isConnected: boolean;
+}
 
 // Custom hook to use the WebSocket context
-const useWebSocket = (params: UseWSParams): WebSocketContextType => {
-  const socket = useContext(WebSocketContext);
+const useWebSocket = (params: UseWSParams): UseWebSocketInterface => {
+  const { socket, isConnected } = useContext(WebSocketContext);
 
   useEffect(() => {
     if (socket) {
@@ -53,7 +57,15 @@ const useWebSocket = (params: UseWSParams): WebSocketContextType => {
     }
   };
 
-  return socket;
+  const sendMessage = (message: object) => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify(message));
+    } else {
+      console.log("WebSocket is not connected.");
+    }
+  };
+
+  return { socket, sendMessage, isConnected };
 };
 
 export default useWebSocket;

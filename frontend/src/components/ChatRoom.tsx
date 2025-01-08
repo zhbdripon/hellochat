@@ -3,10 +3,10 @@ import TextField from "@mui/material/TextField";
 import { useEffect, useRef } from "react";
 import { useQueryClient } from "react-query";
 
+import useDarkMode from "../hook/useDarkMode";
 import useMessage, { Message } from "../hook/useMessage";
 import useWebSocket from "../hook/useWebSocket";
 import { ListApiResponse } from "../services/apiClient";
-import useDarkMode from "../hook/useDarkMode";
 
 interface Props {
   channelId: number;
@@ -20,7 +20,7 @@ const ChatRoom = ({ serverId, channelId }: Props) => {
   const isDarkMode = useDarkMode();
   const { data, isLoading, error } = useMessage({ channelId: channelId });
   const messages = data?.results;
-  const socket = useWebSocket({
+  const { sendMessage } = useWebSocket({
     channelId,
     onReceiveNewMessage,
   });
@@ -47,16 +47,13 @@ const ChatRoom = ({ serverId, channelId }: Props) => {
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      if (inputRef.current && inputRef.current.value.trim() !== "" && socket) {
-        socket.send(
-          JSON.stringify({
-            type: "server_message",
-            server_id: serverId,
-            channel_id: channelId,
-            message: inputRef.current.value.trim(),
-          })
-        );
-
+      if (inputRef.current && inputRef.current.value.trim() !== "") {
+        sendMessage({
+          type: "server_message",
+          server_id: serverId,
+          channel_id: channelId,
+          message: inputRef.current.value.trim(),
+        });
         inputRef.current.value = "";
       }
     }

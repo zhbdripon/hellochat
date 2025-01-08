@@ -1,8 +1,17 @@
-import React, { createContext, ReactNode, useEffect, useState } from "react";
+import React, {
+  createContext,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-type WebSocketContextType = WebSocket | null;
+interface WebSocketContextInterface {
+  socket: WebSocket | null;
+  isConnected: boolean;
+}
 
-export const WebSocketContext = createContext<WebSocketContextType>(null);
+export const WebSocketContext = createContext<WebSocketContextInterface>(null);
 
 interface WebSocketProviderProps {
   children: ReactNode;
@@ -11,36 +20,82 @@ interface WebSocketProviderProps {
 export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   children,
 }) => {
-  const [socket, setSocket] = useState<WebSocket | null>(null);
+  const socketRef = useRef<WebSocket | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const retryCountRef = useRef(0); // Track retry attempts
 
-  useEffect(() => {
-    const connection = async () => {
-      if (socket) {
-        return;
-      }
-      const ws = await new WebSocket(
-        `ws://172.28.28.49:8080/join?token=${localStorage.getItem("access")}`
-      );
-      setSocket(ws);
+  const maxRetries = 100;
+  const retryDelay = 2000;
+
+  const connect = () => {
+    if (
+      socketRef.current &&
+      socketRef.current.readyState !== WebSocket.CLOSED
+    ) {
+      return;
+    }
+
+    const ws = new WebSocket(
+      `ws://172.28.28.49:8080/join?token=${localStorage.getItem("access")}`
+    );
+
+    ws.onopen = () => {
+      console.log("WebSocket connected");
+      setIsConnected(true);
+      retryCountRef.current = 0;
+      socketRef.current = ws;
     };
 
-    connection();
+    ws.onclose = () => {
+      console.log("WebSocket disconnected");
+      setIsConnected(false);
 
-    return () => socket?.close();
-  }, [socket]);
+      if (retryCountRef.current < maxRetries) {
+        retryCountRef.current += 1;
+        const maxRetryDelayTime = 60_000;
+        const delay = Math.min(
+          retryDelay * retryCountRef.current,
+          maxRetryDelayTime
+        );
 
-  if (!socket) return;
+        console.log(`Reconnecting in ${delay / 1000}s...`);
+        setTimeout(connect, Math.min(delay, 60000));
+      } else {
+        console.error("Max retries reached. Unable to reconnect.");
+      }
+    };
 
-  socket.onopen = () => {
-    console.log("WebSocket connected");
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+      ws.close();
+    };
   };
 
-  socket.onclose = () => {
-    console.log("WebSocket disconnected");
-  };
+  useEffect(() => {
+    connect();
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        console.log(
+          "Tab refocused: resetting retry counter and reconnecting..."
+        );
+        retryCountRef.current = 0;
+        connect();
+      }
+    };
+
+    window.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener("visibilitychange", handleVisibilityChange);
+      socketRef.current?.close();
+    };
+  }, []);
 
   return (
-    <WebSocketContext.Provider value={socket}>
+    <WebSocketContext.Provider
+      value={{ socket: socketRef.current, isConnected }}
+    >
       {children}
     </WebSocketContext.Provider>
   );
