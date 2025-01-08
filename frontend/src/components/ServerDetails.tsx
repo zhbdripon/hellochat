@@ -1,16 +1,15 @@
 import Typography from "@mui/joy/Typography";
 import { Box } from "@mui/material";
 
+import useDarkMode from "../hook/useDarkMode";
 import useServerStore from "../store";
 import ChannelList from "./ChannelList";
-import useDarkMode from "../hook/useDarkMode";
+import ServerUser from "./ServerUser";
 
 const ServerDetails = () => {
   const server = useServerStore((s) => s.selectedServer);
 
   if (!server) return null;
-
-  const userName = localStorage.getItem('username') || '';
 
   return (
     <Box className="h-full">
@@ -18,9 +17,7 @@ const ServerDetails = () => {
         <ServerHeader serverName={server.name} />
         <ChannelList serverId={server.id} />
       </div>
-      <Box className="h-12 bg-iconBarDark">
-        {userName}
-      </Box>
+      <ServerUser />
     </Box>
   );
 };
@@ -32,7 +29,7 @@ interface ServerHeaderProps {
 }
 
 const ServerHeader = ({ serverName }: ServerHeaderProps) => {
-  const isDarkMode = useDarkMode()
+  const isDarkMode = useDarkMode();
   return (
     <Box
       className={`
