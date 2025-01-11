@@ -1,13 +1,16 @@
 from django.http import Http404
-from drf_spectacular.utils import OpenApiParameter, extend_schema
-from drf_spectacular.utils import extend_schema_view
-from rest_framework import status, viewsets
+from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
+from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
 from .models import Channel, Server
-from .serializers import ChannelSerializer, ServerSerializer
+from .serializers import (
+    ChannelSerializer,
+    ServerCategory,
+    ServerSerializer,
+    ServerCategorySerializer,
+)
 
 
 @extend_schema_view(
@@ -29,10 +32,8 @@ class ServerViewSet(viewsets.ModelViewSet):
     serializer_class = ServerSerializer
 
     def get_queryset(self):
-        queryset = (
-            Server.objects.prefetch_related("channels")
-            .prefetch_related("members")
-            .filter(members=self.request.user)
+        queryset = Server.objects.prefetch_related("channels", "members").filter(
+            members=self.request.user
         )
         category = self.request.query_params.get("category")
 
@@ -73,3 +74,10 @@ class ChannelViewSet(viewsets.ModelViewSet):
             return self.get_queryset().get(pk=pk)
         except Channel.DoesNotExist:
             raise Http404
+
+
+class ServerCategoryViewSet(viewsets.ModelViewSet):
+    queryset = ServerCategory.objects.all()
+    serializer_class = ServerCategorySerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = PageNumberPagination

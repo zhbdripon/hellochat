@@ -15,5 +15,8 @@ def custom_api_root(request, format=None):
                 format=format,
             ),
             "messages": reverse("message-list", request=request, format=format),
+            "server-categories": reverse(
+                "server-category-list", request=request, format=format
+            ),
         }
     )

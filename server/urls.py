@@ -15,12 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from .views import ServerViewSet, ChannelViewSet
+from .views import ServerViewSet, ChannelViewSet, ServerCategoryViewSet
 from rest_framework_nested import routers
 from django.urls import path, include
 
 server_router = routers.DefaultRouter()
 server_router.register("servers", ServerViewSet, basename="server")
+server_router.register(
+    "server-categories", ServerCategoryViewSet, basename="server-category"
+)
 
 channel_router = routers.NestedDefaultRouter(server_router, "servers", lookup="server")
 channel_router.register("channels", ChannelViewSet, basename="server-channel")
