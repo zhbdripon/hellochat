@@ -17,6 +17,7 @@ class ServerSerializer(serializers.ModelSerializer):
         model = Server
         fields = ['id', 'name', 'owner', 'category',
                   'description', 'members', 'channels', 'member_count']
+        read_only_fields = ['owner', 'members']
 
     def get_member_count(self, obj):
         return obj.members.count()

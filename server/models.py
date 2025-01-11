@@ -15,7 +15,7 @@ def category_icon_path(instance, filename):
     return f'category/{instance.id}/icons/{filename}'
 
 
-class Category(models.Model):
+class ServerCategory(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     icon = models.FileField(
@@ -30,10 +30,10 @@ class Server(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,
                               on_delete=models.CASCADE, related_name='servers')
     category = models.ForeignKey(
-        Category, on_delete=models.CASCADE, related_name='servers')
+        ServerCategory, on_delete=models.CASCADE, related_name='servers')
     description = models.TextField(max_length=250, null=True)
     members = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name='server_members')
+        settings.AUTH_USER_MODEL, related_name='server_members', blank=True)
 
     def __str__(self):
         return self.name

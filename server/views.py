@@ -1,5 +1,6 @@
 from django.http import Http404
 from drf_spectacular.utils import OpenApiParameter, extend_schema
+from drf_spectacular.utils import extend_schema_view
 from rest_framework import status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
@@ -9,12 +10,36 @@ from .models import Channel, Server
 from .serializers import ChannelSerializer, ServerSerializer
 
 
-class ServerViewSet(viewsets.ViewSet):
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="category_id", type=str, description="Category filter"
+            ),
+            OpenApiParameter(
+                name="limit", type=int, description="Limit the number of results"
+            ),
+        ],
+        responses={200: ServerSerializer(many=True)},
+    ),
+    post=extend_schema(responses={200: ServerSerializer, 404: "Not found"}),
+)
+class ServerViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = ServerSerializer
 
     def get_queryset(self):
-        return Server.objects.filter(members=self.request.user).all()
+        queryset = (
+            Server.objects.prefetch_related("channels")
+            .prefetch_related("members")
+            .filter(members=self.request.user)
+        )
+        category = self.request.query_params.get("category")
+
+        if category:
+            queryset = queryset.filter(category__id=category)
+
+        return queryset
 
     def get_object_or_404(self, pk):
         try:
@@ -22,36 +47,8 @@ class ServerViewSet(viewsets.ViewSet):
         except Server.DoesNotExist:
             raise Http404
 
-    @extend_schema(
-        parameters=[
-            OpenApiParameter(name="category", type=str, description="Category filter"),
-            OpenApiParameter(
-                name="limit", type=int, description="Limit the number of results"
-            ),
-        ],
-        responses={200: ServerSerializer(many=True)},
-    )
-    def list(self, request):
-        category = request.query_params.get("category")
-        queryset = self.get_queryset()
-
-        if category:
-            queryset = queryset.filter(category__name=category)
-
-        paginator = PageNumberPagination()
-        paginated_queryset = paginator.paginate_queryset(queryset, request)
-        serializer = ServerSerializer(paginated_queryset, many=True)
-        return paginator.get_paginated_response(serializer.data)
-
-    @extend_schema(responses={200: ServerSerializer, 404: "Not found"})
-    def retrieve(self, request, pk=None):
-        try:
-            server = self.get_object_or_404(pk)
-        except Http404:
-            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = ServerSerializer(server)
-        return Response(serializer.data)
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class ChannelViewSet(viewsets.ModelViewSet):
