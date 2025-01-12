@@ -19,6 +19,7 @@ import { forwardRef, useContext } from "react";
 import { ServerAddContext } from "../context/ServerAddContext";
 import useServerCategory from "../hook/useServerCategory";
 import useServerAdd from "../hook/userServerAdd";
+import { NotificationContext } from "../context/notificationProvider";
 
 const ServerCategoryStep = () => {
   const { closeModal, addNewServerData, moveNext } =
@@ -75,6 +76,7 @@ const ServerCategoryStep = () => {
 };
 
 const ServerNameStep = () => {
+  const { showNotification } = useContext(NotificationContext)!;
   const { closeModal, addNewServerData, movePrev, newServerData } =
     useContext(ServerAddContext)!;
   const { data: serverCategoryData, isLoading, error } = useServerCategory();
@@ -82,6 +84,7 @@ const ServerNameStep = () => {
   const mutation = useServerAdd({
     handleServerCreate: () => {
       closeModal();
+      showNotification("Server created");
     },
     handleError: () => {},
   });

@@ -27,13 +27,27 @@ const ServerAddProvider = ({ children }: ServerAddProviderProps) => {
 
   const moveNext = () => setStep((step) => step + 1);
   const movePrev = () => setStep((step) => step - 1);
-  const openModal = () => setShowModal(true);
-  const closeModal = () => setShowModal(false);
+
+  const openModal = () => {
+    setShowModal(true);
+    resetServerAdd();
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    resetServerAdd();
+  };
+
   const addNewServerData = (updates: object) => {
     setNewServerData({
       ...newServerData,
       ...updates,
     });
+  };
+
+  const resetServerAdd = () => {
+    setStep(0);
+    setNewServerData({} as Server);
   };
 
   return (

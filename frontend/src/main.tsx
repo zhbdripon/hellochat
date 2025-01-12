@@ -7,6 +7,7 @@ import { RouterProvider } from "react-router";
 
 import { ReactQueryDevtools } from "react-query/devtools";
 import browserRouter from "./routers.tsx";
+import NotificationProvider from "./context/notificationProvider.tsx";
 
 import "./index.css";
 
@@ -23,7 +24,9 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <RouterProvider router={browserRouter} />
+        <NotificationProvider>
+          <RouterProvider router={browserRouter} />
+        </NotificationProvider>
       </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={false} position={"bottom-right"} />
     </QueryClientProvider>
