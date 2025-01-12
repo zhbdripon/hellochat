@@ -8,8 +8,8 @@ from .models import Channel, Server
 from .serializers import (
     ChannelSerializer,
     ServerCategory,
-    ServerSerializer,
     ServerCategorySerializer,
+    ServerSerializer,
 )
 
 
@@ -49,7 +49,7 @@ class ServerViewSet(viewsets.ModelViewSet):
             raise Http404
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        serializer.save(owner=self.request.user, members=[self.request.user])
 
 
 class ChannelViewSet(viewsets.ModelViewSet):

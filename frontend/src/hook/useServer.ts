@@ -1,9 +1,11 @@
 import { useQuery } from "react-query";
 import APIClient, { ListApiResponse } from "../services/apiClient";
 
-interface Server {
-  id: number;
+export interface Server {
+  id?: number;
   name: string;
+  category: number;
+  description: string;
 }
 
 const useServer = () => {

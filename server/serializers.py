@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Server, Channel, ServerCategory
+
+from .models import Channel, Server, ServerCategory
 
 
 class ChannelSerializer(serializers.ModelSerializer):
@@ -39,4 +40,4 @@ class ChannelSerializer(serializers.ModelSerializer):
 class ServerCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ServerCategory
-        fields = ["id", "description", "icon"]
+        fields = ["id", "name", "description", "icon"]

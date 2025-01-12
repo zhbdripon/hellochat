@@ -3,11 +3,13 @@ import { Box, Tooltip, useColorScheme } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import { useEffect } from "react";
+import ServerAddProvider from "../context/ServerAddContext";
 import useDarkMode from "../hook/useDarkMode";
-import useServer from "../hook/useServer";
+import useServer, { Server } from "../hook/useServer";
 import useWebSocket, { WS_EVENTS } from "../hook/useWebSocket";
-import useServerStore, { Server } from "../store";
+import useServerStore from "../store";
 import { stringToColor } from "../utils";
+import ServerAdd from "./ServerAdd";
 
 const IconBar = () => {
   const { setMode } = useColorScheme();
@@ -81,6 +83,9 @@ const IconBar = () => {
               />
             </Tooltip>
           ))}
+          <ServerAddProvider>
+            <ServerAdd />
+          </ServerAddProvider>
         </Stack>
         <Tooltip title="Toggle Dark Mode" placement="right">
           <WbSunnyIcon

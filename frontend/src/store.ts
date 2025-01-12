@@ -1,10 +1,6 @@
 import { create } from "zustand";
 import { Channel } from "./hook/useChannel";
-export interface Server {
-  id: number;
-  name: string;
-}
-
+import { Server } from "./hook/useServer";
 export interface ServerStore {
   selectedServer: Server | null;
   selectedChannel: Channel | null;

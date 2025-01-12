@@ -29,7 +29,7 @@ interface UseWebSocketInterface {
 
 // Custom hook to use the WebSocket context
 const useWebSocket = (params: UseWSParams): UseWebSocketInterface => {
-  const { socket, isConnected } = useContext(WebSocketContext);
+  const { socket, isConnected } = useContext(WebSocketContext)!;
 
   useEffect(() => {
     if (socket) {
