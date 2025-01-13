@@ -20,7 +20,7 @@ const Server = () => {
         {server && channel && (
           <ChatRoom
             key={channel.id}
-            serverId={server.id}
+            serverId={server.id!}
             channelId={channel.id}
           />
         )}

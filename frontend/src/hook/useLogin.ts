@@ -1,5 +1,7 @@
 import { useMutation } from "react-query";
 import APIClient from "../services/apiClient";
+import { useContext } from "react";
+import { NotificationContext } from "../context/notificationProvider";
 
 interface LoginSuccess {
   refresh: string;
@@ -17,9 +19,10 @@ interface LoginRequest {
   password: string;
 }
 
-type useLoginParams = () => Promise<void>
+type useLoginParams = () => Promise<void>;
 
 const useLogin = (onSuccess: useLoginParams) => {
+  const { showNotification } = useContext(NotificationContext)!;
   const apiClient = new APIClient<LoginResponse>("auth/jwt/create/");
 
   return useMutation<LoginResponse, Error, LoginRequest>({
@@ -29,7 +32,13 @@ const useLogin = (onSuccess: useLoginParams) => {
       console.log(data);
       localStorage.setItem("access", data?.access);
       localStorage.setItem("refresh", data?.refresh);
-      onSuccess()
+      showNotification("Login successful! Welcome back!");
+      onSuccess();
+    },
+    onError: () => {
+      showNotification(
+        "Login failed! Please check your credentials and try again."
+      );
     },
   });
 };
