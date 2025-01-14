@@ -176,12 +176,12 @@ const ServerAdd = () => {
   );
 
   return (
-    <Tooltip
-      title="Create new server"
-      placement="right"
-      className="cursor-pointer"
-    >
-      <>
+    <>
+      <Tooltip
+        title="Create new server"
+        placement="right"
+        className="cursor-pointer"
+      >
         <Avatar
           sx={{ width: 56, height: 56 }}
           variant="rounded"
@@ -189,9 +189,9 @@ const ServerAdd = () => {
         >
           +
         </Avatar>
-        {serverCreationModal}
-      </>
-    </Tooltip>
+      </Tooltip>
+      {serverCreationModal}
+    </>
   );
 };
 
