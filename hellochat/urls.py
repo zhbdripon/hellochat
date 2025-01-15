@@ -33,11 +33,6 @@ urlpatterns = [
                 path("", custom_api_root),
                 path("", include("server.urls")),
                 path("", include("webchat.urls")),
-                path("docs/schema/", SpectacularAPIView.as_view(), name="schema"),
-                path(
-                    "docs/swagger/ui/",
-                    SpectacularSwaggerView.as_view(url_name="schema"),
-                ),
                 re_path(r"^auth/", include("djoser.urls")),
                 re_path(r"^auth/", include("djoser.urls.jwt")),
             ]
@@ -45,6 +40,11 @@ urlpatterns = [
     ),
     path("admin/", admin.site.urls),
     path("__debug__/", include(debug_toolbar.urls)),
+    path("docs/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "docs/swagger/ui/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+    ),
     path("", lambda request: redirect("api/", permanent=False)),
 ]
 
