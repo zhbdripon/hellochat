@@ -1,14 +1,16 @@
 from django.http import Http404
 from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
 from rest_framework import viewsets
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 
-from .models import Channel, Server
+from .models import Channel, Server, ServerInvitation
 from .serializers import (
     ChannelSerializer,
     ServerCategory,
     ServerCategorySerializer,
+    ServerInvitationSerializer,
     ServerSerializer,
 )
 
@@ -81,3 +83,22 @@ class ServerCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = ServerCategorySerializer
     permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
+
+
+class ServerInvitationViewSet(viewsets.ModelViewSet):
+    serializer_class = ServerInvitationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return ServerInvitation.objects.filter(server__owner=user).select_related(
+            "server", "inviter", "invitee"
+        )
+
+    def perform_create(self, serializer):
+        server = serializer.validated_data["server"]
+        if server.owner != self.request.user:
+            raise PermissionDenied(
+                "You do not have permission to invite users to this server."
+            )
+        serializer.save(inviter=self.request.user)

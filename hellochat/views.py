@@ -18,5 +18,8 @@ def custom_api_root(request, format=None):
             "server-categories": reverse(
                 "server-category-list", request=request, format=format
             ),
+            "server-invitations": reverse(
+                "server-invitation-list", request=request, format=format
+            ),
         }
     )
