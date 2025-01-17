@@ -89,11 +89,7 @@ class ServerInvitation(models.Model):
         on_delete=models.CASCADE,
         related_name="sent_invitations",
     )
-    invitee = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="received_invitations",
-    )
+    invitee_email = models.EmailField(null=False, blank=False)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
     created_at = models.DateTimeField(default=now)
     updated_at = models.DateTimeField(auto_now=True)
@@ -108,5 +104,5 @@ class ServerInvitation(models.Model):
     class Meta:
         unique_together = (
             "server",
-            "invitee",
+            "invitee_email",
         )

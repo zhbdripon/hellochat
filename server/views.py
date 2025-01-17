@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.http import Http404
 from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
@@ -16,6 +16,7 @@ from .serializers import (
     ServerInvitationSerializer,
     ServerSerializer,
     ServerNonMemberSerializer,
+    BatchServerInvitationSerializer,
 )
 
 User = get_user_model()
@@ -145,7 +146,7 @@ class ServerInvitationViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         return ServerInvitation.objects.filter(server__owner=user).select_related(
-            "server", "inviter", "invitee"
+            "server", "inviter"
         )
 
     def perform_create(self, serializer):
@@ -155,3 +156,63 @@ class ServerInvitationViewSet(viewsets.ModelViewSet):
                 "You do not have permission to invite users to this server."
             )
         serializer.save(inviter=self.request.user)
+
+
+@action(detail=False, methods=["POST"])
+def batch_invitation(self, request):
+    # Validate the incoming request data
+    serializer_request_data = BatchServerInvitationSerializer(data=request.data)
+    serializer_request_data.is_valid(raise_exception=True)
+    validated_data = serializer_request_data.validated_data
+
+    # Extract server ID and invitee emails from validated data
+    server_id = validated_data.get("server")
+    invitee_emails = validated_data.get("invitee_emails")
+
+    # Fetch the server and handle server not found
+    try:
+        server = Server.objects.prefetch_related("members").get(id=server_id)
+    except Server.DoesNotExist:
+        return Response(
+            {"detail": "Server not found."}, status=status.HTTP_404_NOT_FOUND
+        )
+
+    # Ensure the requesting user is the server owner
+    if server.owner != request.user:
+        return Response(
+            {"detail": "You do not have permission to access this server."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    # Fetch existing members' and invitations' emails in one query
+    existing_emails = set(server.members.values_list("email", flat=True)).union(
+        ServerInvitation.objects.filter(server=server).values_list(
+            "invitee_email", flat=True
+        )
+    )
+
+    # Filter out emails that are already members or invited
+    new_invitees = [
+        {"server": server_id, "invitee_email": email}
+        for email in invitee_emails
+        if email not in existing_emails
+    ]
+
+    # Return early if no new invitees remain
+    if not new_invitees:
+        return Response(
+            {
+                "detail": "No new invitations to send. All emails are either members or already invited."
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    # Validate and save the new invitations
+    serializer = ServerInvitationSerializer(data=new_invitees, many=True)
+    serializer.is_valid(raise_exception=True)
+    serializer.save(inviter=request.user)
+
+    return Response(
+        {"detail": f"Successfully sent {len(new_invitees)} invitations."},
+        status=status.HTTP_200_OK,
+    )

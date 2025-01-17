@@ -48,7 +48,6 @@ class ServerCategorySerializer(serializers.ModelSerializer):
 class ServerInvitationSerializer(serializers.ModelSerializer):
     server_name = serializers.ReadOnlyField(source="server.name")
     inviter_username = serializers.ReadOnlyField(source="inviter.username")
-    invitee_username = serializers.ReadOnlyField(source="invitee.username")
     is_expired = serializers.SerializerMethodField()
 
     class Meta:
@@ -59,8 +58,7 @@ class ServerInvitationSerializer(serializers.ModelSerializer):
             "server_name",
             "inviter",
             "inviter_username",
-            "invitee",
-            "invitee_username",
+            "invitee_email",
             "status",
             "created_at",
             "updated_at",
@@ -69,6 +67,7 @@ class ServerInvitationSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             "id",
+            "inviter",
             "created_at",
             "updated_at",
             "is_expired",
@@ -79,17 +78,13 @@ class ServerInvitationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data["status"] = "pending"
         validated_data["expires_at"] = now() + timedelta(days=365)
+
         return super().create(validated_data)
 
     def get_is_expired(self, obj):
         return obj.is_expired()
 
     def validate(self, data):
-        """Custom validation for server invitations."""
-
-        if data["inviter"] == data["invitee"]:
-            raise serializers.ValidationError("You cannot invite yourself to a server.")
-
         if "expires_at" in data and data["expires_at"] and data["expires_at"] <= now():
             raise serializers.ValidationError("Expiration date must be in the future.")
 
@@ -100,3 +95,10 @@ class ServerNonMemberSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     username = serializers.CharField()
     email = serializers.EmailField()
+
+
+class BatchServerInvitationSerializer(serializers.Serializer):
+    server = serializers.IntegerField()
+    invitee_emails = serializers.ListField(
+        child=serializers.EmailField(), allow_empty=False
+    )
