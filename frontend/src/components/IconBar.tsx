@@ -7,7 +7,7 @@ import ServerAddProvider from "../context/ServerAddContext";
 import useDarkMode from "../hook/useDarkMode";
 import useServer, { Server } from "../hook/useServer";
 import useWebSocket, { WS_EVENTS } from "../hook/useWebSocket";
-import useServerStore from "../store";
+import useServerStore from "../store/useServerStore";
 import { stringToColor } from "../utils";
 import ServerAdd from "./ServerAdd";
 

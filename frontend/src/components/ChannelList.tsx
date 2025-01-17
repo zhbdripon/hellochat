@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useEffect } from "react";
 import useChannel from "../hook/useChannel";
-import useServerStore from "../store";
+import useServerStore from "../store/useServerStore";
 
 interface Props {
   serverId: number;

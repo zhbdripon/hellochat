@@ -2,7 +2,7 @@ import ChatRoom from "../components/ChatRoom";
 import ContentContainer from "../components/ContentContainer";
 import ServerDetails from "../components/ServerDetails";
 import Sidebar from "../components/Sidebar";
-import useServerStore from "../store";
+import useServerStore from "../store/useServerStore";
 
 const Server = () => {
   const { selectedServer: server, selectedChannel: channel } = useServerStore(
