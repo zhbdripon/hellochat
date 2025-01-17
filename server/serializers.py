@@ -94,3 +94,9 @@ class ServerInvitationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Expiration date must be in the future.")
 
         return data
+
+
+class ServerNonMemberSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    username = serializers.CharField()
+    email = serializers.EmailField()
