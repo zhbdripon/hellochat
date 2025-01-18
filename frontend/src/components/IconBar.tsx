@@ -62,11 +62,15 @@ const IconBar = () => {
 
   return (
     <Box
-      className={`w-[72px] h-screen flex flex-row justify-center py-5 
+      className={`w-[72px] h-screen flex flex-row justify-center pt-5 
         ${isDarkMode ? "bg-iconBarDark" : "bg-iconBarLight"}`}
     >
       <Stack direction="column">
-        <Stack direction="column" spacing={2} className="h-[calc(100%-10px)]">
+        <Stack
+          direction="column"
+          spacing={2}
+          className="h-[calc(100%-3rem)] overflow-scroll hide-scrollbar"
+        >
           {servers?.map((server) => (
             <Tooltip title={server.name} placement="right" key={server.id}>
               <Avatar
@@ -87,15 +91,17 @@ const IconBar = () => {
             <ServerAdd />
           </ServerAddProvider>
         </Stack>
-        <Tooltip title="Toggle Dark Mode" placement="right">
-          <WbSunnyIcon
-            onClick={() => {
-              setMode(isDarkMode ? "light" : "dark");
-            }}
-            className="cursor-pointer"
-            sx={{ width: "100%" }}
-          />
-        </Tooltip>
+        <Box className="h-12 flex justify-center items-center">
+          <Tooltip title="Toggle Dark Mode" placement="right">
+            <WbSunnyIcon
+              onClick={() => {
+                setMode(isDarkMode ? "light" : "dark");
+              }}
+              className="cursor-pointer"
+              sx={{ width: "100%" }}
+            />
+          </Tooltip>
+        </Box>
       </Stack>
     </Box>
   );
