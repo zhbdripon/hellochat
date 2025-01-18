@@ -6,8 +6,9 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { RouterProvider } from "react-router";
 
 import { ReactQueryDevtools } from "react-query/devtools";
-import browserRouter from "./routers.tsx";
+import { ConfirmationModalProvider } from "./context/confirmationModalProvider.tsx";
 import NotificationProvider from "./context/notificationProvider.tsx";
+import browserRouter from "./routers.tsx";
 
 import "./index.css";
 
@@ -25,7 +26,9 @@ createRoot(document.getElementById("root")!).render(
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <NotificationProvider>
-          <RouterProvider router={browserRouter} />
+          <ConfirmationModalProvider>
+            <RouterProvider router={browserRouter} />
+          </ConfirmationModalProvider>
         </NotificationProvider>
       </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={false} position={"bottom-right"} />
