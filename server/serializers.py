@@ -2,7 +2,7 @@ from django.utils.timezone import now
 from rest_framework import serializers
 from datetime import timedelta
 
-from .models import Channel, Server, ServerCategory, ServerInvitation
+from .models import Channel, Server, ServerCategory, ServerInvitation, ChannelCategory
 
 
 class ChannelSerializer(serializers.ModelSerializer):
@@ -36,7 +36,14 @@ class ServerSerializer(serializers.ModelSerializer):
 class ChannelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Channel
-        fields = ["id", "name", "topic", "icon", "banner"]
+        fields = ["id", "name", "topic", "icon", "banner", "category"]
+
+
+class ChannelCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChannelCategory
+        fields = ["id", "name", "description", "server", "icon"]
+        read_only_fields = ["id"]
 
 
 class ServerCategorySerializer(serializers.ModelSerializer):
