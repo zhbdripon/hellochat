@@ -8,7 +8,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Channel, Server, ServerInvitation
+from .models import Channel, Server, ServerInvitation, ChannelCategory
 from .serializers import (
     ChannelSerializer,
     ServerCategory,
@@ -17,7 +17,9 @@ from .serializers import (
     ServerSerializer,
     ServerNonMemberSerializer,
     BatchServerInvitationSerializer,
+    ChannelCategorySerializer,
 )
+from .permissions import IsServerMember
 
 User = get_user_model()
 
@@ -122,6 +124,10 @@ class ChannelViewSet(viewsets.ModelViewSet):
             .all()
         )
 
+    def perform_create(self, serializer):
+        server_id = self.kwargs.get("server_pk")
+        return serializer.save(owner=self.request.user, server_id=server_id)
+
     def get_serializer_context(self):
         return {"request": self.request}
 
@@ -130,6 +136,33 @@ class ChannelViewSet(viewsets.ModelViewSet):
             return self.get_queryset().get(pk=pk)
         except Channel.DoesNotExist:
             raise Http404
+
+
+class ChannelCategoryViewSet(viewsets.ModelViewSet):
+    serializer_class = ChannelCategorySerializer
+    permission_classes = [IsAuthenticated, IsServerMember]
+
+    def get_queryset(self):
+        server_id = self.kwargs.get("server_pk")
+        return ChannelCategory.objects.filter(server_id=server_id)
+
+    def perform_create(self, serializer):
+        server_id = self.kwargs.get("server_id")
+
+        try:
+            server = Server.objects.get(id=server_id)
+        except Server.DoesNotExist:
+            return Response(
+                {"detail": "Server not found."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        if server.owner != self.request.user:
+            return Response(
+                {"detail": "You do not have permission to access this server."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        return serializer.save()
 
 
 class ServerCategoryViewSet(viewsets.ModelViewSet):

@@ -20,6 +20,7 @@ from .views import (
     ChannelViewSet,
     ServerCategoryViewSet,
     ServerInvitationViewSet,
+    ChannelCategoryViewSet,
 )
 from rest_framework_nested import routers
 from django.urls import path, include
@@ -35,6 +36,9 @@ server_router.register(
 
 channel_router = routers.NestedDefaultRouter(server_router, "servers", lookup="server")
 channel_router.register("channels", ChannelViewSet, basename="server-channel")
+channel_router.register(
+    "channel-categories", ChannelCategoryViewSet, basename="channel-category"
+)
 
 urlpatterns = [
     path(r"", include(server_router.urls)),
