@@ -1,5 +1,6 @@
 from django.dispatch import receiver
-from server.models import Server, Channel
+from django.db.models.signals import post_save
+from server.models import Server, Channel, ChannelCategory
 
 from webchat.signals import user_belongs_to_server, user_has_access_to_channel
 
@@ -22,5 +23,23 @@ def handle_user_has_access_to_channel(sender, **kwargs):
             .exists()
         )
     except Exception as e:
-        print("on execption")
         return False
+
+
+@receiver(post_save, sender=Server)
+def create_channel_for_new_server(sender, **kwargs):
+    if kwargs["created"]:
+        server = kwargs.get("instance")
+        channel_category = ChannelCategory.objects.create(
+            name="general",
+            description="Default category for every server",
+            server=server,
+        )
+
+        if channel_category:
+            Channel.objects.create(
+                name="Intro",
+                server=kwargs.get("instance"),
+                owner=server.owner,
+                category=channel_category,
+            )
