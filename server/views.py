@@ -3,7 +3,7 @@ from django.http import Http404
 from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, NotFound
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -147,22 +147,17 @@ class ChannelCategoryViewSet(viewsets.ModelViewSet):
         return ChannelCategory.objects.filter(server_id=server_id)
 
     def perform_create(self, serializer):
-        server_id = self.kwargs.get("server_id")
+        server_id = self.kwargs.get("server_pk")
 
         try:
             server = Server.objects.get(id=server_id)
         except Server.DoesNotExist:
-            return Response(
-                {"detail": "Server not found."}, status=status.HTTP_404_NOT_FOUND
-            )
+            raise NotFound("Server not found.")
 
         if server.owner != self.request.user:
-            return Response(
-                {"detail": "You do not have permission to access this server."},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
+            raise PermissionDenied("You do not have permission to access this server.")
 
-        return serializer.save()
+        serializer.save(server=server)
 
 
 class ServerCategoryViewSet(viewsets.ModelViewSet):

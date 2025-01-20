@@ -33,17 +33,23 @@ class ServerSerializer(serializers.ModelSerializer):
         return obj.members.count()
 
 
-class ChannelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Channel
-        fields = ["id", "name", "topic", "icon", "banner", "category"]
-
-
 class ChannelCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ChannelCategory
         fields = ["id", "name", "description", "server", "icon"]
         read_only_fields = ["id"]
+
+
+class ChannelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Channel
+        fields = ["id", "name", "topic", "icon", "banner", "category"]
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation["category"] = ChannelCategorySerializer(instance.category).data
+        return representation
 
 
 class ServerCategorySerializer(serializers.ModelSerializer):
