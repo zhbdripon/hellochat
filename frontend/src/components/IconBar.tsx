@@ -79,7 +79,6 @@ const IconBar = () => {
                     ? "border-4 border-red-600"
                     : ""
                 }
-                variant="rounded"
                 {...stringAvatar(server.name)}
                 onClick={() => {
                   setSelectedServer(server);
