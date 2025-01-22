@@ -1,15 +1,11 @@
 import { useQuery } from "react-query";
 import APIClient, { ListApiResponse } from "../services/apiClient";
+import { ChannelCategory } from "./useChannelCategory";
 
-export interface ChannelCategory {
-  id: number;
-  name: string;
-  server: number;
-  banner: string;
-}
 export interface Channel {
   id: number;
   name: string;
+  topic: string;
   icon: string;
   banner: string;
   category: ChannelCategory;

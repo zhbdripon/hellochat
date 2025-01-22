@@ -3,9 +3,12 @@ import { List, ListItemButton, ListItemText } from "@mui/material";
 import { useConfirmationModal } from "../hook/useConfirmationModal";
 import useServerDelete from "../hook/useServerDelete";
 import useServerStore from "../store/useServerStore";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ChatIcon from "@mui/icons-material/Chat";
 
 const ServerMenu = () => {
-  const { hideServerMenu, showInviteModal } = useServerStore();
+  const { hideServerMenu, showInviteModal, showChannelCreateModal } =
+    useServerStore();
   const { showModal } = useConfirmationModal();
   const server = useServerStore((s) => s.selectedServer);
   const mutation = useServerDelete();
@@ -37,8 +40,17 @@ const ServerMenu = () => {
         className="rounded-lg"
         onClick={handleServerDeleteOperation}
       >
-        <PersonAddAltIcon className="mr-2" />
+        <DeleteIcon className="mr-2" />
         <ListItemText primary="Delete Server" />
+      </ListItemButton>
+      <ListItemButton
+        onClick={() => {
+          showChannelCreateModal();
+          hideServerMenu();
+        }}
+      >
+        <ChatIcon className="mr-2" />
+        <ListItemText primary="Create Channel" />
       </ListItemButton>
     </List>
   );

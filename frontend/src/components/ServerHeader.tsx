@@ -1,17 +1,24 @@
 import { Box, Button, Popover } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
+import { ChannelAddProvider } from "../context/ChannelAddContext";
 import useDarkMode from "../hook/useDarkMode";
-import ServerMenu from "./ServerMenu";
 import useServerStore from "../store/useServerStore";
+import ChannelAdd from "./ChannelAdd";
 import MemberInvite from "./MemberInvite";
+import ServerMenu from "./ServerMenu";
 
 interface ServerHeaderProps {
   serverName: string;
 }
 
 const ServerHeader = ({ serverName }: ServerHeaderProps) => {
-  const { serverMenuOpen, showServerMenu, hideServerMenu, inviteModalOpen } =
-    useServerStore();
+  const {
+    serverMenuOpen,
+    showServerMenu,
+    hideServerMenu,
+    inviteModalOpen,
+    channelCreateModalOpen,
+  } = useServerStore();
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
@@ -59,6 +66,11 @@ const ServerHeader = ({ serverName }: ServerHeaderProps) => {
       </Button>
       {ServerPopover}
       {inviteModalOpen && <MemberInvite />}
+      {channelCreateModalOpen && (
+        <ChannelAddProvider>
+          <ChannelAdd />
+        </ChannelAddProvider>
+      )}
     </Box>
   );
 };

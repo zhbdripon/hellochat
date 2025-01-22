@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import APIClient, { ListApiResponse } from "../services/apiClient";
 
 export interface Server {
-  id?: number;
+  id: number;
   name: string;
   category: number;
   description: string;
