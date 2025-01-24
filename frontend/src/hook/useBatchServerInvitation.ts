@@ -1,8 +1,7 @@
 import { AxiosError } from "axios";
-import { useContext } from "react";
 import { useMutation } from "react-query";
-import { NotificationContext } from "../context/notificationProvider";
 import APIClient from "../services/apiClient";
+import useNotification from "./useNotification";
 
 interface BatchInvitationPayload {
   server: number;
@@ -18,7 +17,7 @@ interface Params {
 }
 
 const useBatchServerInvitation = ({ onSuccess }: Params) => {
-  const { showNotification } = useContext(NotificationContext)!;
+  const { showNotification } = useNotification();
   const apiClient = new APIClient<BatchInvitationResponse>(
     "server-invitations/batch_invitation/"
   );

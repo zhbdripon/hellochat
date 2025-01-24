@@ -1,8 +1,7 @@
-import { useContext } from "react";
 import { useMutation, useQueryClient } from "react-query";
-import { NotificationContext } from "../context/notificationProvider";
 import APIClient, { ListApiResponse } from "../services/apiClient";
 import { Channel } from "./useChannel";
+import useNotification from "./useNotification";
 
 interface ChannelDeleteParams {
   serverId: number | string;
@@ -10,7 +9,7 @@ interface ChannelDeleteParams {
 
 const useChannelDelete = ({ serverId }: ChannelDeleteParams) => {
   const queryClient = useQueryClient();
-  const { showNotification } = useContext(NotificationContext)!;
+  const { showNotification } = useNotification();
   const apiClient = new APIClient(`servers/${serverId}/channels/`);
 
   const removeDeletedChannelFromQuery = (id: string | number) => {

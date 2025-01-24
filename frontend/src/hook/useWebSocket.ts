@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { WebSocketContext } from "../context/webSocketContext";
+import { WebSocketContext } from "../context/WebSocketContext";
 import { Message } from "./useMessage";
 
 export const WS_EVENTS = {

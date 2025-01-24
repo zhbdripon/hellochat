@@ -6,8 +6,8 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { RouterProvider } from "react-router";
 
 import { ReactQueryDevtools } from "react-query/devtools";
-import { ConfirmationModalProvider } from "./context/confirmationModalProvider.tsx";
-import NotificationProvider from "./context/notificationProvider.tsx";
+import { ConfirmationModalProvider } from "./context/ConfirmationModalContext.tsx";
+import NotificationProvider from "./context/NotificationContext.tsx";
 import browserRouter from "./routers.tsx";
 
 import "./index.css";

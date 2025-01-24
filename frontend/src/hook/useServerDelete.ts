@@ -1,12 +1,11 @@
-import { useContext } from "react";
 import { useMutation, useQueryClient } from "react-query";
-import { NotificationContext } from "../context/notificationProvider";
 import APIClient, { ListApiResponse } from "../services/apiClient";
+import useNotification from "./useNotification";
 import { Server } from "./useServer";
 
 const useServerDelete = () => {
   const queryClient = useQueryClient();
-  const { showNotification } = useContext(NotificationContext)!;
+  const { showNotification } = useNotification();
   const apiClient = new APIClient("servers/");
 
   const removeDeletedServerFromQuery = (id: string | number) => {

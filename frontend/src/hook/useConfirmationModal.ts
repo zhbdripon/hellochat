@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { ConfirmationModalContext } from "../context/confirmationModalProvider";
+import { ConfirmationModalContext } from "../context/ConfirmationModalContext";
 
 type ConfirmationModalContextType = {
   showModal: (message: string, onConfirm: () => void) => void;

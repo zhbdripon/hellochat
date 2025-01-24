@@ -1,9 +1,8 @@
 import { AxiosError } from "axios";
-import { useContext } from "react";
 import { useMutation, useQueryClient } from "react-query";
-import { NotificationContext } from "../context/notificationProvider";
 import APIClient, { ListApiResponse } from "../services/apiClient";
 import { Channel } from "./useChannel";
+import useNotification from "./useNotification";
 
 export interface ChannelPayload
   extends Omit<Channel, "id" | "category" | "icon" | "banner"> {
@@ -18,7 +17,7 @@ interface Params {
 const useChannelAdd = ({ serverId, onSuccess }: Params) => {
   const queryClient = useQueryClient();
   const apiClient = new APIClient<Channel>(`servers/${serverId}/channels/`);
-  const { showNotification } = useContext(NotificationContext)!;
+  const { showNotification } = useNotification();
 
   return useMutation<Channel, AxiosError, ChannelPayload>({
     mutationFn: (channelData) => apiClient.post(channelData),

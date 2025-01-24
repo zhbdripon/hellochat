@@ -1,7 +1,6 @@
 import { useMutation } from "react-query";
 import APIClient from "../services/apiClient";
-import { useContext } from "react";
-import { NotificationContext } from "../context/notificationProvider";
+import useNotification from "./useNotification";
 
 interface LoginSuccess {
   refresh: string;
@@ -22,7 +21,7 @@ interface LoginRequest {
 type useLoginParams = () => Promise<void>;
 
 const useLogin = (onSuccess: useLoginParams) => {
-  const { showNotification } = useContext(NotificationContext)!;
+  const { showNotification } = useNotification();
   const apiClient = new APIClient<LoginResponse>("auth/jwt/create/");
 
   return useMutation<LoginResponse, Error, LoginRequest>({

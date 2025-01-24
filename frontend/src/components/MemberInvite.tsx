@@ -10,9 +10,9 @@ import {
   Modal,
   Typography,
 } from "@mui/material";
-import React, { useContext, useState } from "react";
-import { NotificationContext } from "../context/notificationProvider";
+import React, { useState } from "react";
 import useBatchServerInvitation from "../hook/useBatchServerInvitation";
+import useNotification from "../hook/useNotification";
 import useServerStore from "../store/useServerStore";
 
 const style = {
@@ -29,7 +29,7 @@ const style = {
 
 const MemberInvite: React.FC = () => {
   const { inviteModalOpen, hideInviteModal, selectedServer } = useServerStore();
-  const { showNotification } = useContext(NotificationContext)!;
+  const { showNotification } = useNotification();
   const [email, setEmail] = useState<string>("");
   const [currentEmailIsValid, setCurrentEmailValid] = useState(false);
   const [emailList, setEmailList] = useState<string[]>([]);
