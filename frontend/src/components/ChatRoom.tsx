@@ -66,27 +66,38 @@ const ChatRoom = ({ serverId, channelId }: Props) => {
     }
   }, [messages]);
 
+  const isSelfMessage = (author: string) => {
+    const currentUser = localStorage.getItem("username");
+
+    return currentUser === author;
+  };
+
   if (!serverId || !channelId || !messages) return null;
 
   return (
     <Box className="flex flex-col justify-end h-full p-4">
       <Box
-        className="overflow-y-auto h-[90%] flex flex-col-reverse"
+        className="overflow-y-auto h-[90%] flex flex-col-reverse hide-scrollbar"
         ref={messageContainerRef}
       >
-        {messages.map((message) => (
-          <Box
-            key={message.id}
-            className={`${
-              isDarkMode ? "bg-chatBubbleBgDark" : "bg-gray-200"
-            } p-2 rounded-lg mb-2`}
-          >
-            <p className="text-sm font-semibold">
-              {message.author} {message.id}
-            </p>
-            <p>{message.content}</p>
-          </Box>
-        ))}
+        {messages.map((message) => {
+          const authorUserName = message.author;
+          const selfMessage = isSelfMessage(authorUserName);
+
+          return (
+            <Box
+              key={message.id}
+              className={`${
+                isDarkMode ? "bg-chatBubbleBgDark" : "bg-gray-200"
+              } ${
+                selfMessage ? "" : "bg-transparent border-min ml-auto mr-0"
+              } p-2 rounded-lg mb-2 w-fit`}
+            >
+              <p className="text-xs">{message.author}</p>
+              <p>{message.content}</p>
+            </Box>
+          );
+        })}
       </Box>
       <TextField
         inputRef={inputRef}
