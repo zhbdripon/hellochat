@@ -21,6 +21,12 @@ export default {
       backgroundImage: {
         authBg: "url('src/assets/authBg.svg')",
       },
+      borderWidth: {
+        min: '1px',
+      },
+      fontSize: {
+        'xxs': '0.625rem',
+      },
     },
   },
   plugins: [],
