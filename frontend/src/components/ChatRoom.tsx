@@ -93,7 +93,7 @@ const ChatRoom = ({ serverId, channelId }: Props) => {
                 selfMessage ? "" : "bg-transparent border-min ml-auto mr-0"
               } p-2 rounded-lg mb-2 w-fit`}
             >
-              <p className="text-xs">{message.author}</p>
+              <p className="text-xxs">{message.author}</p>
               <p>{message.content}</p>
             </Box>
           );
