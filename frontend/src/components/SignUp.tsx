@@ -1,8 +1,9 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { FormEvent } from "react";
 import { useNavigate } from "react-router";
 import useNotification from "../hook/useNotification";
 import useSignUp from "../hook/useSignUp";
+import CompactTextField from "./styled/CompactTextField";
 
 const SignUp = () => {
   const { showNotification } = useNotification();
@@ -30,46 +31,34 @@ const SignUp = () => {
   };
   return (
     <>
-      <Typography variant="h5" sx={{ mb: "12px" }}>
-        Sign up to Hellochat
+      <Typography variant="h5">Sign up</Typography>
+      <Typography variant="body2" sx={{ mb: "6px" }}>
+        Create your HelloChat account
       </Typography>
       <Box
         component="form"
         onSubmit={handleSubmit}
-        sx={{
-          "& > div": {
-            marginBottom: "12px",
-          },
-        }}
+        className="flex flex-col w-full div>:mb-4"
       >
-        <TextField
+        <CompactTextField
           label="Email"
           type="email"
           name="email"
-          variant="outlined"
           fullWidth
           required
         />
-        <TextField
-          label="Username"
-          name="username"
-          variant="outlined"
-          fullWidth
-          required
-        />
-        <TextField
+        <CompactTextField label="Username" name="username" fullWidth required />
+        <CompactTextField
           label="Password"
           name="password"
           type="password"
-          variant="outlined"
           fullWidth
           required
         />
-        <TextField
+        <CompactTextField
           label="Password Repeat"
           name="passwordRepeat"
           type="password"
-          variant="outlined"
           fullWidth
           required
         />
@@ -83,7 +72,7 @@ const SignUp = () => {
           </Button>
         </Box>
         <Button type="submit" variant="contained" color="primary" fullWidth>
-          Submit
+          Create
         </Button>
       </Box>
     </>

@@ -1,9 +1,11 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { FormEvent } from "react";
 import { useNavigate } from "react-router";
 import useLogin from "../hook/useLogin";
 import { User } from "../pages/Auth";
 import APIClient from "../services/apiClient";
+import GoogleSignInButton from "./GoogleSignInButton";
+import CompactTextField from "./styled/CompactTextField";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -25,32 +27,27 @@ const SignIn = () => {
       mutation.mutate({ username, password });
     }
   };
+
   return (
     <>
-      <Typography variant="h5" sx={{ mb: "12px" }}>
-        Welcome to Hellochat
+      <Typography variant="h5">Sign in</Typography>
+      <Typography variant="body2" sx={{ mb: "6px" }}>
+        Welcome, please sign in to continue
+      </Typography>
+      <GoogleSignInButton />
+      <Typography variant="body2" sx={{ mb: "6px" }}>
+        or
       </Typography>
       <Box
         component="form"
         onSubmit={handleSubmit}
-        sx={{
-          "& > div": {
-            marginBottom: "12px",
-          },
-        }}
+        className="flex flex-col w-full div>:mb-4"
       >
-        <TextField
-          label="Username"
-          name="username"
-          variant="outlined"
-          fullWidth
-          required
-        />
-        <TextField
+        <CompactTextField label="Username" name="username" fullWidth required />
+        <CompactTextField
           label="Password"
           name="password"
           type="password"
-          variant="outlined"
           fullWidth
           required
         />
@@ -64,7 +61,7 @@ const SignIn = () => {
           </Button>
         </Box>
         <Button type="submit" variant="contained" color="primary" fullWidth>
-          Submit
+          Sign In
         </Button>
       </Box>
     </>

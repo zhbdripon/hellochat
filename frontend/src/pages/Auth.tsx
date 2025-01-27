@@ -17,7 +17,7 @@ const Auth = () => {
     <div className="w-svw h-svh bg-authBg bg-cover bg-no-repeat">
       <Paper
         elevation={3}
-        className="absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] w-[500px] p-4 rounded-lg"
+        className="absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] w-[420px] p-8 rounded-lg flex flex-col items-center"
       >
         {page === "signup" ? <SignUp /> : <SignIn />}
       </Paper>
