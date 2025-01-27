@@ -17,6 +17,7 @@ djoser = "*"
 djangorestframework-simplejwt = "*"
 django-cors-headers = "*"
 drf-nested-routers = "*"
+social-auth-app-django = "*"
 
 [dev-packages]
 

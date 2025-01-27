@@ -29,6 +29,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "True"
+ENABLE_SOCIAL_AUTH = os.getenv("ENABLE_SOCIAL_AUTH") == "True"
 
 # Application definition
 
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "rest_framework_simplejwt",
+    "social_django",
     "djoser",
     "drf_spectacular",
     "accounts",
@@ -150,6 +152,11 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 15,
 }
 
+AUTHENTICATION_BACKENDS = [
+    "social_core.backends.google.GoogleOAuth2",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 SEPECTACULAR_SETTINGS = {
     "TITLE": "HelloChat API",
     "DESCRIPTION": "API for HelloChat",
@@ -175,6 +182,29 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=30),
 }
+
+DJOSER = {
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": ["http://localhost:5173/gcal"],
+}
+
+if ENABLE_SOCIAL_AUTH:
+    SOCIAL_AUTH_PIPELINE = (
+        "social_core.pipeline.social_auth.social_details",
+        "social_core.pipeline.social_auth.social_uid",
+        "social_core.pipeline.social_auth.social_user",
+        "social_core.pipeline.user.get_username",
+        "social_core.pipeline.social_auth.associate_by_email",
+        "social_core.pipeline.user.create_user",
+        "social_core.pipeline.social_auth.associate_user",
+        "social_core.pipeline.social_auth.load_extra_data",
+        "social_core.pipeline.user.user_details",
+    )
+    SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
+    SOCIAL_AUTH_ALLOWED_REDIRECT_URIS = ["http://localhost:5173/gcal"]
+    SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
+    SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
+    # SOCIAL_AUTH_JSONFIELD_ENABLED = True (uncomment this when moving to postgres)
+
 
 if DEBUG:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1", "172.28.28.49"]
