@@ -15,20 +15,24 @@ class APIClient<T> {
     this.endpoint = endpoint;
   }
 
-  getAll = (config: AxiosRequestConfig) => {
+  getAll = (config: AxiosRequestConfig = {}) => {
     return axiosInstance.get<T>(this.endpoint, config).then((res) => res.data);
   };
 
-  get = () => {
-    return axiosInstance.get<T>(this.endpoint).then((res) => res.data);
+  get = (config: AxiosRequestConfig = {}) => {
+    return axiosInstance.get<T>(this.endpoint, config).then((res) => res.data);
   };
 
-  post = (data: any) => {
-    return axiosInstance.post<T>(this.endpoint, data).then((res) => res.data);
+  post = (data: any, config: AxiosRequestConfig = {}) => {
+    return axiosInstance
+      .post<T>(this.endpoint, data, config)
+      .then((res) => res.data);
   };
 
-  delete = (id: number | string) => {
-    return axiosInstance.delete(this.endpoint + id).then((res) => res.data);
+  delete = (id: number | string, config: AxiosRequestConfig = {}) => {
+    return axiosInstance
+      .delete(this.endpoint + id, config)
+      .then((res) => res.data);
   };
 }
 

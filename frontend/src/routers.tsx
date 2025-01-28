@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate, Outlet } from "react-router";
 import Auth from "./pages/Auth";
 import ErrorPage from "./pages/ErrorPage";
+import GoogleAuthCallback from "./pages/GoogleAuthCallback";
 import Layout from "./pages/Layout";
 import Server from "./pages/Server";
 
@@ -35,6 +36,11 @@ const browserRouter = createBrowserRouter([
         errorElement: <ErrorPage />,
       },
     ],
+  },
+  {
+    path: "/gcal",
+    element: <GoogleAuthCallback />,
+    errorElement: <ErrorPage />,
   },
 ]);
 

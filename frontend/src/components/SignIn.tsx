@@ -1,6 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import { FormEvent } from "react";
 import { useNavigate } from "react-router";
+import useGoogleAuthorizationURL from "../hook/useGoogleAuthorizationURL";
 import useLogin from "../hook/useLogin";
 import { User } from "../pages/Auth";
 import APIClient from "../services/apiClient";
@@ -10,6 +11,7 @@ import CompactTextField from "./styled/CompactTextField";
 const SignIn = () => {
   const navigate = useNavigate();
   const mutation = useLogin(onLoginSuccess);
+  const googleAuthURLMutation = useGoogleAuthorizationURL();
 
   async function onLoginSuccess() {
     const apiClient = new APIClient<User>("auth/users/me/");
@@ -34,7 +36,7 @@ const SignIn = () => {
       <Typography variant="body2" sx={{ mb: "6px" }}>
         Welcome, please sign in to continue
       </Typography>
-      <GoogleSignInButton />
+      <GoogleSignInButton onClick={() => googleAuthURLMutation.mutate()} />
       <Typography variant="body2" sx={{ mb: "6px" }}>
         or
       </Typography>
