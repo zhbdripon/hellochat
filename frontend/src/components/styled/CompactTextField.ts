@@ -18,9 +18,10 @@ const CompactTextField = styled(TextField)(({ theme }) => ({
   "& .MuiInputLabel-root": {
     transform: "translate(14px, 12px) scale(1)",
   },
-  "& .MuiInputLabel-root.Mui-focused": {
-    transform: "translate(14px, -9px) scale(0.75)",
-  },
+  "& .MuiInputLabel-root.Mui-focused, & .MuiInputLabel-root.MuiInputLabel-shrink":
+    {
+      transform: "translate(14px, -9px) scale(0.75)",
+    },
 }));
 
 export default CompactTextField;
