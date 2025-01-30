@@ -7,7 +7,22 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 class CustomJWTAuthentication(JWTAuthentication):
+    def enforce_csrf(self, request):
+        def dummy_get_response(request):
+            return None
+
+        check = CSRFCheck(dummy_get_response)
+        # populates request.META['CSRF_COOKIE'], which is used in process_view()
+        check.process_request(request)
+        reason = check.process_view(request, None, (), {})
+        if reason:
+            # CSRF failed, bail with explicit error message
+            raise exceptions.PermissionDenied("CSRF Failed: %s" % reason)
+
     def authenticate(self, request: Request):
+        if request.method not in ("GET", "HEAD", "OPTIONS", "TRACE"):
+            self.enforce_csrf(request)
+
         access_token = request.COOKIES.get("access_token")
 
         if access_token is None:

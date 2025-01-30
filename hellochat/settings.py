@@ -211,7 +211,6 @@ if ENABLE_SOCIAL_AUTH:
 
 
 CORS_ALLOW_CREDENTIALS = True
-
 if DEBUG:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1", "172.28.28.49"]
     CORS_ALLOWED_ORIGINS = [
@@ -224,3 +223,9 @@ if DEBUG:
 CSRF_COOKIE_SECURE = False  # set true if using HTTPS
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = "Lax"
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS = [
+        "http://127.0.0.1:5173",
+        "http://localhost:5173",
+        "http://172.28.28.49:5173",
+    ]

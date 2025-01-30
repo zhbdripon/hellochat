@@ -1,11 +1,11 @@
 from django.http import JsonResponse
-from rest_framework.reverse import reverse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from rest_framework.views import APIView
-from django.views.decorators.csrf import ensure_csrf_cookie
-
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 
@@ -42,6 +42,7 @@ def csrf_view(request):
     return JsonResponse({"detail": "CSRF cookie set"})
 
 
+@method_decorator(csrf_protect, name="dispatch")
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request: Request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
@@ -71,6 +72,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         return response
 
 
+@method_decorator(csrf_protect, name="dispatch")
 class CustomTokenRefreshView(TokenRefreshView):
     def post(self, request: Request, *args, **kwargs):
         refresh_token = request.COOKIES.get("refresh_token")
