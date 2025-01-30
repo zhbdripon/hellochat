@@ -148,7 +148,7 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "hellochat.authentication.CustomJWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
@@ -182,9 +182,9 @@ CHANNEL_LAYERS = {
 }
 
 SIMPLE_JWT = {
-    "AUTH_HEADER_TYPES": ("JWT",),
     "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=30),
+    "ROTATE_REFRESH_TOKENS": True,
 }
 
 DJOSER = {
@@ -210,11 +210,17 @@ if ENABLE_SOCIAL_AUTH:
     # SOCIAL_AUTH_JSONFIELD_ENABLED = True (uncomment this when moving to postgres)
 
 
+CORS_ALLOW_CREDENTIALS = True
+
 if DEBUG:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1", "172.28.28.49"]
-    CORS_ALLOW_CREDENTIALS = True
     CORS_ALLOWED_ORIGINS = [
         "http://127.0.0.1:5173",
         "http://localhost:5173",
         "http://172.28.28.49:5173",
     ]
+
+# CSRF settings
+CSRF_COOKIE_SECURE = False  # set true if using HTTPS
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = "Lax"

@@ -26,11 +26,8 @@ const useLogin = (onSuccess: useLoginParams) => {
 
   return useMutation<LoginResponse, Error, LoginRequest>({
     mutationFn: ({ username, password }: LoginRequest) =>
-      apiClient.post({ username, password }),
-    onSuccess: (data: LoginResponse) => {
-      console.log(data);
-      localStorage.setItem("access", data?.access);
-      localStorage.setItem("refresh", data?.refresh);
+      apiClient.post({ username, password }, { withCredentials: true }),
+    onSuccess: () => {
       showNotification("Login successful! Welcome back!");
       onSuccess();
     },

@@ -23,7 +23,13 @@ from django.conf.urls.static import static
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from webchat.consumer import WebChatConsumer
 from django.shortcuts import redirect
-from .views import custom_api_root
+from .views import (
+    custom_api_root,
+    csrf_view,
+    CustomTokenObtainPairView,
+    CustomTokenRefreshView,
+    LogoutView,
+)
 
 urlpatterns = [
     path(
@@ -33,6 +39,18 @@ urlpatterns = [
                 path("", custom_api_root),
                 path("", include("server.urls")),
                 path("", include("webchat.urls")),
+                path("auth/csrf", csrf_view),
+                path(
+                    "auth/jwt/create/",
+                    CustomTokenObtainPairView.as_view(),
+                    name="login",
+                ),
+                path(
+                    "auth/jwt/refresh/",
+                    CustomTokenRefreshView.as_view(),
+                    name="refresh",
+                ),
+                path("auth/logout/", LogoutView.as_view(), name="logout"),
                 re_path(r"^auth/", include("djoser.urls")),
                 re_path(r"^auth/", include("djoser.urls.jwt")),
                 re_path(r"^auth/", include("djoser.social.urls")),

@@ -6,13 +6,13 @@ import Layout from "./pages/Layout";
 import Server from "./pages/Server";
 
 const PrivateRoute = () => {
-  const accessToken = localStorage.getItem("access");
-  return accessToken ? <Outlet /> : <Navigate to="/auth" replace />;
+  const username = localStorage.getItem("username");
+  return username ? <Outlet /> : <Navigate to="/auth" replace />;
 };
 
 const PublicRoute = () => {
-  const accessToken = localStorage.getItem("access");
-  return !accessToken ? <Outlet /> : <Navigate to="/" replace />;
+  const username = localStorage.getItem("username");
+  return !username ? <Outlet /> : <Navigate to="/" replace />;
 };
 
 const browserRouter = createBrowserRouter([

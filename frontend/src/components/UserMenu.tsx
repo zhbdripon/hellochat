@@ -1,16 +1,18 @@
 import { Box, ListItemText, MenuItem, MenuList } from "@mui/material";
 import { useNavigate } from "react-router";
+import useLogoutMutation from "../hook/useLogoutMutation";
 
 const UserMenu = () => {
   const navigate = useNavigate();
+  const logoutMutation = useLogoutMutation(() => navigate("/auth"));
+
   return (
     <Box>
       <MenuList>
         <MenuItem>
           <ListItemText
             onClick={() => {
-              localStorage.clear();
-              navigate("/auth");
+              logoutMutation.mutate();
             }}
           >
             Logout

@@ -11,8 +11,11 @@ import NotificationProvider from "./context/NotificationContext.tsx";
 import browserRouter from "./routers.tsx";
 
 import "./index.css";
+import APIClient from "./services/apiClient.ts";
 
 const queryClient = new QueryClient();
+const apiClient = new APIClient("auth/csrf");
+apiClient.get({ withCredentials: true });
 
 const theme = createTheme({
   colorSchemes: {
