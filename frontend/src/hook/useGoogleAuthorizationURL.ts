@@ -3,7 +3,7 @@ import { useMutation } from "react-query";
 import APIClient from "../services/apiClient";
 import useNotification from "./useNotification";
 
-export const REDIRECT_URL = "http://localhost:5173/gcal";
+export const REDIRECT_URL = import.meta.env.VITE_GOOGLE_AUTH_REDIRECT_URL;
 
 interface GoogleAuthorizationURLResponse {
   authorization_url: string;

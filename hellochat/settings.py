@@ -176,7 +176,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [(os.getenv("REDIS_HOST"), os.getenv("REDIS_PORT"))],
         },
     },
 }
@@ -188,7 +188,7 @@ SIMPLE_JWT = {
 }
 
 DJOSER = {
-    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": ["http://localhost:5173/gcal"],
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": [os.getenv("GOOGLE_AUTH_REDIRECT_URL")],
 }
 
 if ENABLE_SOCIAL_AUTH:
@@ -204,7 +204,7 @@ if ENABLE_SOCIAL_AUTH:
         "social_core.pipeline.user.user_details",
     )
     SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
-    SOCIAL_AUTH_ALLOWED_REDIRECT_URIS = ["http://localhost:5173/gcal"]
+    SOCIAL_AUTH_ALLOWED_REDIRECT_URIS = [os.getenv("GOOGLE_AUTH_REDIRECT_URL")]
     SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
     SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
     # SOCIAL_AUTH_JSONFIELD_ENABLED = True (uncomment this when moving to postgres)

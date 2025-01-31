@@ -6,6 +6,11 @@ import React, {
   useState,
 } from "react";
 
+const wsProtocol = import.meta.env.VITE_WS_PROTOCOL;
+const backendHost = import.meta.env.VITE_BACKEND_HOST;
+const backendPort = import.meta.env.VITE_WS_PORT;
+const wsURL = `${wsProtocol}://${backendHost}:${backendPort}/join`;
+
 interface WebSocketContextInterface {
   socket: WebSocket | null;
   isConnected: boolean;
@@ -37,7 +42,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       return;
     }
 
-    const ws = new WebSocket(`ws://localhost:8080/join`);
+    const ws = new WebSocket(wsURL);
 
     ws.onopen = () => {
       console.log("WebSocket connected");

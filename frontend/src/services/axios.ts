@@ -1,5 +1,10 @@
 import axios from "axios";
 
+const backendProtocol = import.meta.env.VITE_BACKEND_PROTOCOL;
+const backendHost = import.meta.env.VITE_BACKEND_HOST;
+const backendPort = import.meta.env.VITE_BACKEND_PORT;
+const apiURL = `${backendProtocol}://${backendHost}:${backendPort}/api/`;
+
 function getCookie(name: string) {
   const cookies = document.cookie.split("; ");
   for (const cookie of cookies) {
@@ -10,7 +15,7 @@ function getCookie(name: string) {
 }
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8000/api/",
+  baseURL: apiURL,
 });
 
 axiosInstance.interceptors.request.use(
@@ -40,7 +45,7 @@ axiosInstance.interceptors.response.use(
 
       try {
         const response = await axios.post(
-          "http://172.28.28.49:8000/api/auth/jwt/refresh/",
+          `${apiURL}auth/jwt/refresh/`,
           {},
           { withCredentials: true }
         );
