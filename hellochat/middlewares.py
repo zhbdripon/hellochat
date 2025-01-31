@@ -17,13 +17,22 @@ User = get_user_model()
 
 
 @database_sync_to_async
-def get_user(query: bytes):
-
+def get_user(scope):
     try:
-        query_string = query.decode("utf-8")
-        token = query_string.split("=")[1]
+        cookies = {}
+        headers = dict(scope["headers"])
+        if b"cookie" in headers:
+            cookie_header = headers[b"cookie"].decode()
+            cookies = {
+                k.strip(): v.strip()
+                for k, v in (cookie.split("=") for cookie in cookie_header.split(";"))
+            }
 
-        decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+        access_token = cookies.get("access_token")
+
+        decoded_token = jwt.decode(
+            access_token, settings.SECRET_KEY, algorithms=["HS256"]
+        )
         user_id = decoded_token.get("user_id")
 
         if user_id is None:
@@ -48,7 +57,7 @@ class QueryAuthMiddleware:
         # Look up user from query string (you should also do things like
         # checking if it is a valid user ID, or if scope["user"] is already
         # populated).
-        scope["user"] = await get_user(scope["query_string"])
+        scope["user"] = await get_user(scope)
 
         return await self.app(scope, receive, send)
 

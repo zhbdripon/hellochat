@@ -11,7 +11,9 @@ interface WebSocketContextInterface {
   isConnected: boolean;
 }
 
-export const WebSocketContext = createContext<WebSocketContextInterface | null>(null);
+export const WebSocketContext = createContext<WebSocketContextInterface | null>(
+  null
+);
 
 interface WebSocketProviderProps {
   children: ReactNode;
@@ -35,9 +37,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       return;
     }
 
-    const ws = new WebSocket(
-      `ws://172.28.28.49:8080/join?token=${localStorage.getItem("access")}`
-    );
+    const ws = new WebSocket(`ws://localhost:8080/join`);
 
     ws.onopen = () => {
       console.log("WebSocket connected");
