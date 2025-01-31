@@ -28,6 +28,7 @@ from .views import (
     csrf_view,
     CustomTokenObtainPairView,
     CustomTokenRefreshView,
+    CustomSocialProviderAuthView,
     LogoutView,
 )
 
@@ -53,7 +54,11 @@ urlpatterns = [
                 path("auth/logout/", LogoutView.as_view(), name="logout"),
                 re_path(r"^auth/", include("djoser.urls")),
                 re_path(r"^auth/", include("djoser.urls.jwt")),
-                re_path(r"^auth/", include("djoser.social.urls")),
+                re_path(
+                    r"^auth/o/(?P<provider>\S+)/$",
+                    CustomSocialProviderAuthView.as_view(),
+                    name="provider-auth",
+                ),
             ]
         ),
     ),

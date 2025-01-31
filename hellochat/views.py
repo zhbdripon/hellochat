@@ -1,6 +1,8 @@
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from djoser.social.views import ProviderAuthView
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -42,32 +44,38 @@ def csrf_view(request):
     return JsonResponse({"detail": "CSRF cookie set"})
 
 
+def set_cookie_on_response(response):
+    access_token = response.data.pop("access")
+    refresh_token = response.data.pop("refresh")
+
+    response.set_cookie(
+        "access_token",
+        access_token,
+        httponly=True,
+        secure=True,
+        samesite="Lax",
+        max_age=15 * 60,  # 15 minutes
+    )
+
+    response.set_cookie(
+        "refresh_token",
+        refresh_token,
+        httponly=True,
+        secure=True,
+        samesite="Lax",
+        max_age=7 * 24 * 60 * 60,  # 7 days
+    )
+
+    return response
+
+
 @method_decorator(csrf_protect, name="dispatch")
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request: Request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
 
-        if response.status_code == 200:
-            access_token = response.data.pop("access")
-            refresh_token = response.data.pop("refresh")
-
-            response.set_cookie(
-                "access_token",
-                access_token,
-                httponly=True,
-                secure=True,
-                samesite="Lax",
-                max_age=15 * 60,  # 15 minutes
-            )
-
-            response.set_cookie(
-                "refresh_token",
-                refresh_token,
-                httponly=True,
-                secure=True,
-                samesite="Lax",
-                max_age=7 * 24 * 60 * 60,  # 7 days
-            )
+        if response.status_code == status.HTTP_200_OK:
+            return set_cookie_on_response(response)
 
         return response
 
@@ -81,7 +89,7 @@ class CustomTokenRefreshView(TokenRefreshView):
 
         request.data["refresh"] = refresh_token
         response = super().post(request, *args, **kwargs)
-        if response.status_code == 200:
+        if response.status_code == status.HTTP_200_OK:
             access_token = response.data.pop("access")
             response.set_cookie(
                 "access_token",
@@ -91,6 +99,16 @@ class CustomTokenRefreshView(TokenRefreshView):
                 samesite="Lax",
                 max_age=15 * 60,
             )
+
+        return response
+
+
+class CustomSocialProviderAuthView(ProviderAuthView):
+    def post(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+
+        if response.status_code == status.HTTP_201_CREATED:
+            return set_cookie_on_response(response)
 
         return response
 
