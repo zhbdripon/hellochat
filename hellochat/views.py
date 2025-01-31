@@ -92,7 +92,7 @@ class CustomTokenRefreshView(TokenRefreshView):
                 max_age=15 * 60,
             )
 
-        return refresh_token
+        return response
 
 
 class LogoutView(APIView):

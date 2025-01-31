@@ -47,7 +47,10 @@ axiosInstance.interceptors.response.use(
         const response = await axios.post(
           `${apiURL}auth/jwt/refresh/`,
           {},
-          { withCredentials: true }
+          {
+            withCredentials: true,
+            headers: { "X-CSRFToken": getCookie("csrftoken") },
+          }
         );
 
         if (response.status === 200) {
