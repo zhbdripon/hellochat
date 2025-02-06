@@ -1,8 +1,9 @@
 import React from "react";
 import useDarkMode from "../hook/useDarkMode";
+import Menubar from "./Menubar";
 
 interface Props {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const ContentContainer = ({ children }: Props) => {
@@ -11,11 +12,12 @@ const ContentContainer = ({ children }: Props) => {
   return (
     <div
       className={`
-      w-[calc(100%-304px)]
-      h-screen
-      ${isDarkMode ? "bg-mainDark" : "bg-mainLight"}`}
+        ${children ? "w-[calc(100%-304px)]" : "w-full"}
+        h-screen
+        ${isDarkMode ? "bg-mainDark" : "bg-mainLight"}`}
     >
-      {children}
+      <Menubar />
+      {children && <div className="h-calc-minus-2rem">{children}</div>}
     </div>
   );
 };

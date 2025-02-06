@@ -1,5 +1,4 @@
-import WbSunnyIcon from "@mui/icons-material/WbSunny";
-import { Box, Tooltip, useColorScheme } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import { useEffect } from "react";
@@ -12,7 +11,6 @@ import { stringToColor } from "../utils";
 import ServerAdd from "./ServerAdd";
 
 const IconBar = () => {
-  const { setMode } = useColorScheme();
   const { sendMessage } = useWebSocket(undefined);
   const isDarkMode = useDarkMode();
   const setSelectedServer = useServerStore((s) => s.setSelectedServer);
@@ -65,42 +63,29 @@ const IconBar = () => {
       className={`w-[72px] h-screen flex flex-row justify-center pt-5 
         ${isDarkMode ? "bg-iconBarDark" : "bg-iconBarLight"}`}
     >
-      <Stack direction="column">
-        <Stack
-          direction="column"
-          spacing={2}
-          className="h-[calc(100%-3rem)] overflow-scroll hide-scrollbar"
-        >
-          {servers?.map((server) => (
-            <Tooltip title={server.name} placement="right" key={server.id}>
-              <Avatar
-                className={
-                  server.id === selectedServer?.id
-                    ? "border-4 border-red-600"
-                    : ""
-                }
-                {...stringAvatar(server.name)}
-                onClick={() => {
-                  setSelectedServer(server);
-                }}
-              />
-            </Tooltip>
-          ))}
-          <ServerAddProvider>
-            <ServerAdd />
-          </ServerAddProvider>
-        </Stack>
-        <Box className="h-12 flex justify-center items-center">
-          <Tooltip title="Toggle Dark Mode" placement="right">
-            <WbSunnyIcon
+      <Stack
+        direction="column"
+        spacing={2}
+        className="h-[calc(100%-3rem)] overflow-scroll hide-scrollbar"
+      >
+        {servers?.map((server) => (
+          <Tooltip title={server.name} placement="right" key={server.id}>
+            <Avatar
+              className={
+                server.id === selectedServer?.id
+                  ? "border-4 border-red-600"
+                  : ""
+              }
+              {...stringAvatar(server.name)}
               onClick={() => {
-                setMode(isDarkMode ? "light" : "dark");
+                setSelectedServer(server);
               }}
-              className="cursor-pointer"
-              sx={{ width: "100%" }}
             />
           </Tooltip>
-        </Box>
+        ))}
+        <ServerAddProvider>
+          <ServerAdd />
+        </ServerAddProvider>
       </Stack>
     </Box>
   );

@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import useServerStore from "../store/useServerStore";
 import ChannelCategories from "./ChannelCategories";
 import ServerHeader from "./ServerHeader";
-import ServerUserTile from "./ServerUserTile";
+import ServerQuickActionMenu from "./ServerQuickActionMenu";
 
 const ServerDetails = () => {
   const server = useServerStore((s) => s.selectedServer);
@@ -16,7 +16,7 @@ const ServerDetails = () => {
         <ServerHeader serverName={server.name} />
         <ChannelCategories serverId={server.id} />
       </div>
-      <ServerUserTile />
+      <ServerQuickActionMenu />
     </Box>
   );
 };

@@ -17,6 +17,7 @@ export default {
       },
       height: {
         'calc-minus-48': 'calc(100% - 48px)',
+        'calc-minus-2rem': 'calc(100% - 2rem)',
       },
       backgroundImage: {
         authBg: "url('src/assets/authBg.svg')",

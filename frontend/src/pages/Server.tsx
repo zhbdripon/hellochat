@@ -9,13 +9,13 @@ const Server = () => {
     (state) => state
   );
 
-  if (!server) return null;
-
   return (
     <>
-      <Sidebar>
-        <ServerDetails />
-      </Sidebar>
+      {server && (
+        <Sidebar>
+          <ServerDetails />
+        </Sidebar>
+      )}
       <ContentContainer>
         {server && channel && (
           <ChatRoom

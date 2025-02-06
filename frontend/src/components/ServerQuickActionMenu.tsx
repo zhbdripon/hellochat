@@ -4,10 +4,9 @@ import useWebSocket from "../hook/useWebSocket";
 
 import Popover from "@mui/material/Popover";
 import React from "react";
-import UserMenu from "./UserMenu";
 import { getStyledBadge } from "./styled/StyledBadge";
 
-const ServerUserTile = () => {
+const ServerQuickActionMenu = () => {
   const { isConnected } = useWebSocket(undefined);
   const isDarkMode = useDarkMode();
   const userName = localStorage.getItem("username") || "";
@@ -67,10 +66,10 @@ const ServerUserTile = () => {
           horizontal: "center",
         }}
       >
-        <UserMenu />
+        <Box>items will be added</Box>
       </Popover>
     </Box>
   );
 };
 
-export default ServerUserTile;
+export default ServerQuickActionMenu;
