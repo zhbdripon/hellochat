@@ -20,6 +20,7 @@ from .serializers import (
     ChannelCategorySerializer,
 )
 from .permissions import IsServerMember
+from .service import send_invitation
 
 User = get_user_model()
 
@@ -219,14 +220,10 @@ class ServerInvitationViewSet(viewsets.ModelViewSet):
         )
 
         # Filter out emails that are already members or invited
-        new_invitees = [
-            {"server": server_id, "invitee_email": email}
-            for email in invitee_emails
-            if email not in existing_emails
-        ]
+        new_mails = [email for email in invitee_emails if email not in existing_emails]
 
         # Return early if no new invitees remain
-        if not new_invitees:
+        if not new_mails:
             return Response(
                 {
                     "detail": "No new invitations to send. All emails are either members or already invited."
@@ -234,9 +231,15 @@ class ServerInvitationViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        new_invitees = [
+            {"server": server_id, "invitee_email": email} for email in new_mails
+        ]
+
         serializer = ServerInvitationSerializer(data=new_invitees, many=True)
         serializer.is_valid(raise_exception=True)
         serializer.save(inviter=request.user)
+
+        send_invitation(new_mails, server.name)
 
         return Response(
             {"detail": f"Successfully sent {len(new_invitees)} invitations."},

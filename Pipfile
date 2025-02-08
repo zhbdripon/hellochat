@@ -19,6 +19,7 @@ django-cors-headers = "*"
 drf-nested-routers = "*"
 social-auth-app-django = "*"
 psycopg2-binary = "*"
+django-templated-mail = "*"
 
 [dev-packages]
 

@@ -229,3 +229,11 @@ if DEBUG:
         "http://localhost:5173",
         "http://172.28.28.49:5173",
     ]
+
+# mailing
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
