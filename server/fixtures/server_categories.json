@@ -1,0 +1,74 @@
+[
+  {
+    "model": "server.servercategory",
+    "pk": 1,
+    "fields": {
+      "name": "General",
+      "description": "For casual conversations and announcements.",
+      "icon": "server_category_general.png"
+    }
+  },
+  {
+    "model": "server.servercategory",
+    "pk": 2,
+    "fields": {
+      "name": "Gaming",
+      "description": "Discuss games, find teammates, and share clips.",
+      "icon": "server_category_gaming.png"
+    }
+  },
+  {
+    "model": "server.servercategory",
+    "pk": 3,
+    "fields": {
+      "name": "Programming",
+      "description": "Talk about code, debug issues, and share projects.",
+      "icon": "server_category_programming.png"
+    }
+  },
+  {
+    "model": "server.servercategory",
+    "pk": 4,
+    "fields": {
+      "name": "Music",
+      "description": "Share playlists, talk about music, and jam together.",
+      "icon": "server_category_music.png"
+    }
+  },
+  {
+    "model": "server.servercategory",
+    "pk": 5,
+    "fields": {
+      "name": "Study Group",
+      "description": "Organize study sessions and share learning resources.",
+      "icon": "server_category_study.png"
+    }
+  },
+  {
+    "model": "server.servercategory",
+    "pk": 6,
+    "fields": {
+      "name": "Art & Design",
+      "description": "Showcase your artwork and design inspiration.",
+      "icon": "server_category_art.png"
+    }
+  },
+  {
+    "model": "server.servercategory",
+    "pk": 7,
+    "fields": {
+      "name": "Memes",
+      "description": "Laugh and share your favorite memes.",
+      "icon": "server_category_memes.png"
+    }
+  },
+  {
+    "model": "server.servercategory",
+    "pk": 8,
+    "fields": {
+      "name": "Support",
+      "description": "Ask for help or offer support to others.",
+      "icon": "server_category_support.png"
+    }
+  }
+]
