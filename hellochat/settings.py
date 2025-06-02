@@ -15,10 +15,10 @@ from pathlib import Path
 from dotenv import load_dotenv
 import datetime
 
-load_dotenv()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(override=True)
 
 
 # Quick-start development settings - unsuitable for production
@@ -207,7 +207,7 @@ if ENABLE_SOCIAL_AUTH:
     SOCIAL_AUTH_ALLOWED_REDIRECT_URIS = [os.getenv("GOOGLE_AUTH_REDIRECT_URL")]
     SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
     SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
-    # SOCIAL_AUTH_JSONFIELD_ENABLED = True (uncomment this when moving to postgres)
+    SOCIAL_AUTH_JSONFIELD_ENABLED = True
 
 
 CORS_ALLOW_CREDENTIALS = True
